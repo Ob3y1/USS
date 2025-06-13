@@ -876,9 +876,10 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                             // جلب بيانات القاعة حسب ID (مثلاً id=1)
                             int hallId = 1; // عدلها حسب صف الجدول
                             final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
+                            final token = prefs.getString('token');
                             var headers = {
-                              'Authorization': 'Bearer $token', };
+                              'Authorization': 'Bearer $token',
+                            };
                             var dio = Dio();
 
                             try {
