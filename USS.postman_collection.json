@@ -1,0 +1,1388 @@
+{
+	"info": {
+		"_postman_id": "4af7c8d7-357a-4868-8974-f3c5e2324f10",
+		"name": "USS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36595562"
+	},
+	"item": [
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@example.com\",\r\n    \"password\": \"111q\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/loginAdmin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"loginAdmin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|m82e4b0o1FT80vFu5yEHbXLJMxNvN9LkM0hbU2fZ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/logoutAdmin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"logoutAdmin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/showprofile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"showprofile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 3|XSP89kivriPYezXXrgU6bha9pns4nec58Qcn8Eu2",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Obay\",\r\n    \"email\": \"admin@example.com\",\r\n    \"password\": \"111q\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/updateprofile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"updateprofile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Workingday",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"day\":\"Friday\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/addWorkingDay",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"addWorkingDay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Workingday",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"day\":\"Saturday\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/working-days/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"working-days",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Workingday",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|vRVl3AOhFrdnhYGhKRUqW6Q8KQGdQ1yqO4wrSifs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/working-days/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"working-days",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Specialties",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"sunday\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/addspecialties",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"addspecialties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Specialties",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"sunday\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/specialties/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"specialties",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Specialties",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|vRVl3AOhFrdnhYGhKRUqW6Q8KQGdQ1yqO4wrSifs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/specialties/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"specialties",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dash1",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/dash1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"dash1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/statistics",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"statistics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add subjects",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"wqewq\",\r\n    \"student_number\":\"5\",\r\n    \"year\":\"5\",\r\n    \"specialties\":[\"1\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/subjects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Subject",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|2MozaABW3dbCfsKrYacTrRir8FyyWI2cBFdW3qxH",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/subject/50",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"subject",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update subjects",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"hh\",\r\n    \"student_number\":\"5\",\r\n    \"year\":\"5\",\r\n    \"specialties\":[\"1\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/subjects/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"subjects",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete subjects",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|vRVl3AOhFrdnhYGhKRUqW6Q8KQGdQ1yqO4wrSifs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/subjects/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"subjects",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add day",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|2MozaABW3dbCfsKrYacTrRir8FyyWI2cBFdW3qxH",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"day\":\"satrday\",\r\n    \"date\":\"2025/3/8\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/exam-days",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"exam-days"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "day",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|2MozaABW3dbCfsKrYacTrRir8FyyWI2cBFdW3qxH",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/exam-day/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"exam-day",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update day",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|2MozaABW3dbCfsKrYacTrRir8FyyWI2cBFdW3qxH",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"day\":\"Monday\",\r\n    \"date\":\"2025/3/10\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/exam-days/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"exam-days",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete day",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|vRVl3AOhFrdnhYGhKRUqW6Q8KQGdQ1yqO4wrSifs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/exam-days/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"exam-days",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add time",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|2MozaABW3dbCfsKrYacTrRir8FyyWI2cBFdW3qxH",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"time\":\"2PM\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/exam-times",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"exam-times"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "time",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|2MozaABW3dbCfsKrYacTrRir8FyyWI2cBFdW3qxH",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/exam-time/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"exam-time",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update time",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"time\":\"9AM\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/exam-times/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"exam-times",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete time",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|vRVl3AOhFrdnhYGhKRUqW6Q8KQGdQ1yqO4wrSifs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/exam-times/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"exam-times",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Hall",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"location\": \"302\",\r\n    \"chair_number\": 60,\r\n    \"camera_addresses\": [\r\n        \"192.168.0.101\",\r\n        \"192.168.0.102\",\r\n        \"192.168.0.103\"\r\n    ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/halls",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"halls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Hall",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|2MozaABW3dbCfsKrYacTrRir8FyyWI2cBFdW3qxH",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/hall/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"hall",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Hall",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"location\": \"32\",\r\n    \"chair_number\": 70,\r\n    \"camera_addresses\": [\r\n        \"192.168.0.101\",\r\n        \"192.168.0.102\"\r\n    ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/halls/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"halls",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Hall",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|vRVl3AOhFrdnhYGhKRUqW6Q8KQGdQ1yqO4wrSifs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"day\":\"Saturday\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/halls/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"halls",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dash2",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/dash2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"dash2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add  Supervisor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"أحمد يوسف\",\r\n    \"email\": \"ahmed@example.com\",\r\n    \"password\": \"secret123\",\r\n    \"day_ids\": [1, 3]  // مثلًا أيام: الأحد، الثلاثاء، الخميس\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/supervisors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"supervisors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Supervisor",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|y5ujw1JZzc2IWV1YfUCaDMjOXhAchcmK1IADtw4F",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"أحمد\",\r\n    \"email\": \"ahmed@example.com\",\r\n    \"password\": \"111q\",\r\n    \"day_ids\": [1, 3]  // مثلًا أيام: الأحد، الثلاثاء، الخميس\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/supervisors/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"supervisors",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Supervisor",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|vRVl3AOhFrdnhYGhKRUqW6Q8KQGdQ1yqO4wrSifs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"day\":\"Saturday\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/supervisors/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"supervisors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ShowUsers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/showusers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"showusers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Schedules",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/schedules",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"schedules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Schedules",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/resetSchedule",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"resetSchedule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Schedule",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"subject\": \"رياضيات 1\",\r\n    \"level\": 1,\r\n    \"day\": 3,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"الميكانيك الهندسي\",\r\n    \"level\": 1,\r\n    \"day\": 7,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"مدخل إلى البرمجة\",\r\n    \"level\": 1,\r\n    \"day\": 5,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"الرياضيات 2\",\r\n    \"level\": 1,\r\n    \"day\": 3,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"الجودة والوثوقية\",\r\n    \"level\": 1,\r\n    \"day\": 1,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"أسس الهندسة الكهربائية\",\r\n    \"level\": 1,\r\n    \"day\": 2,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"كيمياء\",\r\n    \"level\": 1,\r\n    \"day\": 6,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"رياضيات 3\",\r\n    \"level\": 2,\r\n    \"day\": 6,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"فيزياء\",\r\n    \"level\": 2,\r\n    \"day\": 2,\r\n    \"slot\": \"8AM\"\r\n  },\r\n  {\r\n    \"subject\": \"الرسم الهندسي\",\r\n    \"level\": 2,\r\n    \"day\": 1,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"رياضيات متقطعة\",\r\n    \"level\": 2,\r\n    \"day\": 6,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"تطبيقات في الاحصاء الهندسي\",\r\n    \"level\": 2,\r\n    \"day\": 4,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"تحليل عددي\",\r\n    \"level\": 2,\r\n    \"day\": 4,\r\n    \"slot\": \"8AM\"\r\n  },\r\n  {\r\n    \"subject\": \"دارات منطقية\",\r\n    \"level\": 2,\r\n    \"day\": 3,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"مدخل الى علوم الحاسوب\",\r\n    \"level\": 2,\r\n    \"day\": 7,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"مدخل الى الخوارزميات\",\r\n    \"level\": 2,\r\n    \"day\": 7,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"مقدمة في تقانة الشبكات\",\r\n    \"level\": 2,\r\n    \"day\": 5,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"الخوارزميات وبنى المعطيات\",\r\n    \"level\": 3,\r\n    \"day\": 7,\r\n    \"slot\": \"8AM\"\r\n  },\r\n  {\r\n    \"subject\": \"البرمجة غرضية التوجه\",\r\n    \"level\": 3,\r\n    \"day\": 4,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"لغة التجميع\",\r\n    \"level\": 3,\r\n    \"day\": 2,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"مدخل الى الذكاء الصنعي\",\r\n    \"level\": 3,\r\n    \"day\": 7,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"قواعد معطيات 1\",\r\n    \"level\": 3,\r\n    \"day\": 4,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"تقانة الانترنت وبرمجة الويب\",\r\n    \"level\": 3,\r\n    \"day\": 6,\r\n    \"slot\": \"8AM\"\r\n  },\r\n  {\r\n    \"subject\": \"تنظيم وبنيان الحواسيب\",\r\n    \"level\": 3,\r\n    \"day\": 6,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"تراسل 1\",\r\n    \"level\": 3,\r\n    \"day\": 3,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"برمجة النظم\",\r\n    \"level\": 3,\r\n    \"day\": 1,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"قواعد البيانات\",\r\n    \"level\": 3,\r\n    \"day\": 2,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"نمذجة ومحاكاة\",\r\n    \"level\": 3,\r\n    \"day\": 5,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"مهارات اللغة الانكليزية\",\r\n    \"level\": 3,\r\n    \"day\": 5,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"بحوث العمليات\",\r\n    \"level\": 4,\r\n    \"day\": 3,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"هندسة البرمجيات 1\",\r\n    \"level\": 4,\r\n    \"day\": 5,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"قواعد المعطيات 2\",\r\n    \"level\": 4,\r\n    \"day\": 4,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"نظم تشغيل\",\r\n    \"level\": 4,\r\n    \"day\": 3,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"نظرية الحوسبة\",\r\n    \"level\": 4,\r\n    \"day\": 1,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"امن نظم المعلومات\",\r\n    \"level\": 4,\r\n    \"day\": 1,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"تراسل 2\",\r\n    \"level\": 4,\r\n    \"day\": 7,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"تصميم المترجمات\",\r\n    \"level\": 4,\r\n    \"day\": 2,\r\n    \"slot\": \"8AM\"\r\n  },\r\n  {\r\n    \"subject\": \"تطوير التطبيقات\",\r\n    \"level\": 4,\r\n    \"day\": 2,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"نظم موزعة\",\r\n    \"level\": 5,\r\n    \"day\": 1,\r\n    \"slot\": \"8AM\"\r\n  },\r\n  {\r\n    \"subject\": \"نظم ادارية\",\r\n    \"level\": 5,\r\n    \"day\": 5,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"انظمة الوسائط\",\r\n    \"level\": 5,\r\n    \"day\": 2,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"برمجة تفرعية\",\r\n    \"level\": 5,\r\n    \"day\": 4,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"نظم استرجاع البيانات\",\r\n    \"level\": 5,\r\n    \"day\": 5,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"الرجل الالي\",\r\n    \"level\": 5,\r\n    \"day\": 6,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"الرؤية الحاسوبية\",\r\n    \"level\": 5,\r\n    \"day\": 7,\r\n    \"slot\": \"8AM\"\r\n  },\r\n  {\r\n    \"subject\": \"النمذجة والمحاكاة\",\r\n    \"level\": 5,\r\n    \"day\": 4,\r\n    \"slot\": \"10AM\"\r\n  },\r\n  {\r\n    \"subject\": \"التعلم الالي\",\r\n    \"level\": 5,\r\n    \"day\": 3,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"هندسة برمجيات2\",\r\n    \"level\": 5,\r\n    \"day\": 4,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"قواعد معطيات متقدمة\",\r\n    \"level\": 5,\r\n    \"day\": 6,\r\n    \"slot\": \"8AM\"\r\n  },\r\n  {\r\n    \"subject\": \"بناء المترجمات\",\r\n    \"level\": 5,\r\n    \"day\": 2,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"الحوسبة النقالة\",\r\n    \"level\": 5,\r\n    \"day\": 2,\r\n    \"slot\": \"8AM\"\r\n  },\r\n  {\r\n    \"subject\": \"الشبكات اللاسلكية\",\r\n    \"level\": 5,\r\n    \"day\": 2,\r\n    \"slot\": \"2PM\"\r\n  },\r\n  {\r\n    \"subject\": \"امن شبكات حاسوبية\",\r\n    \"level\": 5,\r\n    \"day\": 3,\r\n    \"slot\": \"12PM\"\r\n  },\r\n  {\r\n    \"subject\": \"ادارة الشبكات\",\r\n    \"level\": 5,\r\n    \"day\": 4,\r\n    \"slot\": \"8AM\"\r\n  },\r\n  {\r\n    \"subject\": \"تصميم الشبكات\",\r\n    \"level\": 5,\r\n    \"day\": 5,\r\n    \"slot\": \"10AM\"\r\n  }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/schedules",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"schedules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Distribution",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/distribution",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"distribution"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Distribution",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/resetDistribution",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"resetDistribution"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save distribution",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"ok\",\r\n  \"schedule_distribution\": {\r\n    \"2025-06-27 Friday 8AM\": {\r\n      \"نظم موزعة\": {\r\n        \"القاعة رقم 4\": 42,\r\n        \"القاعة رقم 6\": 57\r\n      }\r\n    },\r\n    \"2025-06-28 Saturday 8AM\": {\r\n      \"فيزياء\": {\r\n        \"القاعة رقم 1\": 4,\r\n        \"القاعة رقم 4\": 55\r\n      },\r\n      \"تصميم المترجمات\": {\r\n        \"القاعة رقم 4\": 21,\r\n        \"القاعة رقم 6\": 29\r\n      },\r\n      \"الحوسبة النقالة\": {\r\n        \"القاعة رقم 1\": 11,\r\n        \"القاعة رقم 4\": 7,\r\n        \"القاعة رقم 6\": 57\r\n      }\r\n    },\r\n    \"2025-06-30 Monday 8AM\": {\r\n      \"تحليل عددي\": {\r\n        \"القاعة رقم 4\": 46,\r\n        \"القاعة رقم 6\": 41\r\n      },\r\n      \"ادارة الشبكات\": {\r\n        \"القاعة رقم 6\": 45\r\n      }\r\n    },\r\n    \"2025-07-04 Friday 8AM\": {\r\n      \"تقانة الانترنت وبرمجة الويب\": {\r\n        \"القاعة رقم 4\": 31,\r\n        \"القاعة رقم 6\": 40\r\n      },\r\n      \"قواعد معطيات متقدمة\": {\r\n        \"القاعة رقم 6\": 46\r\n      }\r\n    },\r\n    \"2025-07-05 Saturday 8AM\": {\r\n      \"الخوارزميات وبنى المعطيات\": {\r\n        \"القاعة رقم 4\": 35,\r\n        \"القاعة رقم 6\": 57\r\n      },\r\n      \"الرؤية الحاسوبية\": {\r\n        \"القاعة رقم 4\": 37,\r\n        \"القاعة رقم 6\": 29\r\n      }\r\n    },\r\n    \"2025-06-27 Friday 10AM\": {\r\n      \"الجودة والوثوقية\": {\r\n        \"القاعة رقم 4\": 31,\r\n        \"القاعة رقم 6\": 33\r\n      },\r\n      \"امن نظم المعلومات\": {\r\n        \"القاعة رقم 6\": 53\r\n      }\r\n    },\r\n    \"2025-06-28 Saturday 10AM\": {\r\n      \"أسس الهندسة الكهربائية\": {\r\n        \"القاعة رقم 4\": 41,\r\n        \"القاعة رقم 6\": 57\r\n      },\r\n      \"قواعد البيانات\": {\r\n        \"القاعة رقم 4\": 19,\r\n        \"القاعة رقم 6\": 29\r\n      },\r\n      \"انظمة الوسائط\": {\r\n        \"القاعة رقم 1\": 43,\r\n        \"القاعة رقم 4\": 23\r\n      }\r\n    },\r\n    \"2025-06-29 Sunday 10AM\": {\r\n      \"الرياضيات 2\": {\r\n        \"القاعة رقم 4\": 3,\r\n        \"القاعة رقم 6\": 56\r\n      },\r\n      \"تراسل 1\": {\r\n        \"القاعة رقم 4\": 55,\r\n        \"القاعة رقم 6\": 30\r\n      }\r\n    },\r\n    \"2025-06-30 Monday 10AM\": {\r\n      \"قواعد معطيات 1\": {\r\n        \"القاعة رقم 6\": 38\r\n      },\r\n      \"النمذجة والمحاكاة\": {\r\n        \"القاعة رقم 6\": 48\r\n      }\r\n    },\r\n    \"2025-07-01 Tuesday 10AM\": {\r\n      \"مقدمة في تقانة الشبكات\": {\r\n        \"القاعة رقم 4\": 1,\r\n        \"القاعة رقم 6\": 57\r\n      },\r\n      \"هندسة البرمجيات 1\": {\r\n        \"القاعة رقم 4\": 18,\r\n        \"القاعة رقم 6\": 29\r\n      },\r\n      \"تصميم الشبكات\": {\r\n        \"القاعة رقم 4\": 32\r\n      }\r\n    },\r\n    \"2025-07-04 Friday 10AM\": {\r\n      \"كيمياء\": {\r\n        \"القاعة رقم 6\": 45\r\n      },\r\n      \"تنظيم وبنيان الحواسيب\": {\r\n        \"القاعة رقم 4\": 24,\r\n        \"القاعة رقم 6\": 41\r\n      }\r\n    },\r\n    \"2025-07-05 Saturday 10AM\": {\r\n      \"مدخل الى الخوارزميات\": {\r\n        \"القاعة رقم 4\": 34,\r\n        \"القاعة رقم 6\": 40\r\n      },\r\n      \"تراسل 2\": {\r\n        \"القاعة رقم 6\": 46\r\n      }\r\n    },\r\n    \"2025-06-27 Friday 12PM\": {\r\n      \"الرسم الهندسي\": {\r\n        \"القاعة رقم 1\": 13,\r\n        \"القاعة رقم 4\": 29,\r\n        \"القاعة رقم 6\": 57\r\n      },\r\n      \"نظرية الحوسبة\": {\r\n        \"القاعة رقم 4\": 54,\r\n        \"القاعة رقم 6\": 29\r\n      }\r\n    },\r\n    \"2025-06-28 Saturday 12PM\": {\r\n      \"لغة التجميع\": {\r\n        \"القاعة رقم 1\": 48\r\n      }\r\n    },\r\n    \"2025-06-29 Sunday 12PM\": {\r\n      \"دارات منطقية\": {\r\n        \"القاعة رقم 1\": 35,\r\n        \"القاعة رقم 4\": 6\r\n      },\r\n      \"بحوث العمليات\": {\r\n        \"القاعة رقم 6\": 43\r\n      },\r\n      \"التعلم الالي\": {\r\n        \"القاعة رقم 4\": 55,\r\n        \"القاعة رقم 6\": 19\r\n      },\r\n      \"امن شبكات حاسوبية\": {\r\n        \"القاعة رقم 4\": 22,\r\n        \"القاعة رقم 6\": 24\r\n      }\r\n    },\r\n    \"2025-06-30 Monday 12PM\": {\r\n      \"البرمجة غرضية التوجه\": {\r\n        \"القاعة رقم 4\": 32,\r\n        \"القاعة رقم 6\": 32\r\n      },\r\n      \"برمجة تفرعية\": {\r\n        \"القاعة رقم 6\": 54\r\n      }\r\n    },\r\n    \"2025-07-01 Tuesday 12PM\": {\r\n      \"مهارات اللغة الانكليزية\": {\r\n        \"القاعة رقم 4\": 37,\r\n        \"القاعة رقم 6\": 29\r\n      },\r\n      \"نظم استرجاع البيانات\": {\r\n        \"القاعة رقم 4\": 41,\r\n        \"القاعة رقم 6\": 57\r\n      }\r\n    },\r\n    \"2025-07-04 Friday 12PM\": {\r\n      \"رياضيات متقطعة\": {\r\n        \"القاعة رقم 1\": 50\r\n      },\r\n      \"الرجل الالي\": {\r\n        \"القاعة رقم 1\": 30\r\n      }\r\n    },\r\n    \"2025-07-05 Saturday 12PM\": {\r\n      \"الميكانيك الهندسي\": {\r\n        \"القاعة رقم 6\": 49\r\n      },\r\n      \"مدخل الى الذكاء الصنعي\": {\r\n        \"القاعة رقم 4\": 3,\r\n        \"القاعة رقم 6\": 37\r\n      }\r\n    },\r\n    \"2025-06-27 Friday 2PM\": {\r\n      \"برمجة النظم\": {\r\n        \"القاعة رقم 1\": 48\r\n      }\r\n    },\r\n    \"2025-06-28 Saturday 2PM\": {\r\n      \"تطوير التطبيقات\": {\r\n        \"القاعة رقم 4\": 37,\r\n        \"القاعة رقم 6\": 57\r\n      },\r\n      \"بناء المترجمات\": {\r\n        \"القاعة رقم 4\": 3,\r\n        \"القاعة رقم 6\": 29\r\n      },\r\n      \"الشبكات اللاسلكية\": {\r\n        \"القاعة رقم 1\": 21,\r\n        \"القاعة رقم 4\": 43\r\n      }\r\n    },\r\n    \"2025-06-29 Sunday 2PM\": {\r\n      \"رياضيات 1\": {\r\n        \"القاعة رقم 4\": 6,\r\n        \"القاعة رقم 6\": 33\r\n      },\r\n      \"نظم تشغيل\": {\r\n        \"القاعة رقم 6\": 53\r\n      }\r\n    },\r\n    \"2025-06-30 Monday 2PM\": {\r\n      \"تطبيقات في الاحصاء الهندسي\": {\r\n        \"القاعة رقم 6\": 55\r\n      },\r\n      \"قواعد المعطيات 2\": {\r\n        \"القاعة رقم 4\": 13,\r\n        \"القاعة رقم 6\": 24\r\n      },\r\n      \"هندسة برمجيات2\": {\r\n        \"القاعة رقم 4\": 55,\r\n        \"القاعة رقم 6\": 7\r\n      }\r\n    },\r\n    \"2025-07-01 Tuesday 2PM\": {\r\n      \"مدخل إلى البرمجة\": {\r\n        \"القاعة رقم 1\": 43\r\n      },\r\n      \"نمذجة ومحاكاة\": {\r\n        \"القاعة رقم 4\": 55,\r\n        \"القاعة رقم 6\": 29\r\n      },\r\n      \"نظم ادارية\": {\r\n        \"القاعة رقم 1\": 12,\r\n        \"القاعة رقم 4\": 28,\r\n        \"القاعة رقم 6\": 57\r\n      }\r\n    },\r\n    \"2025-07-04 Friday 2PM\": {\r\n      \"رياضيات 3\": {\r\n        \"القاعة رقم 4\": 39,\r\n        \"القاعة رقم 6\": 57\r\n      }\r\n    },\r\n    \"2025-07-05 Saturday 2PM\": {\r\n      \"مدخل الى علوم الحاسوب\": {\r\n        \"القاعة رقم 6\": 69\r\n      }\r\n    }\r\n  },\r\n  \"supervision_assignment\": [\r\n    {\r\n      \"supervisor\": \"Observer 8\",\r\n      \"date\": \"2025-06-27\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"8AM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"نظم موزعة\"\r\n      ],\r\n      \"total_students\": 42\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 12\",\r\n      \"date\": \"2025-06-27\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"8AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"نظم موزعة\"\r\n      ],\r\n      \"total_students\": 57\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 30\",\r\n      \"date\": \"2025-06-28\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"8AM\",\r\n      \"hall\": \"القاعة رقم 1\",\r\n      \"courses\": [\r\n        \"فيزياء\",\r\n        \"الحوسبة النقالة\"\r\n      ],\r\n      \"total_students\": 15\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 28\",\r\n      \"date\": \"2025-06-28\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"8AM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"فيزياء\",\r\n        \"تصميم المترجمات\",\r\n        \"الحوسبة النقالة\"\r\n      ],\r\n      \"total_students\": 83\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 15\",\r\n      \"date\": \"2025-06-28\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"8AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"تصميم المترجمات\",\r\n        \"الحوسبة النقالة\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 6\",\r\n      \"date\": \"2025-06-30\",\r\n      \"day\": \"Monday\",\r\n      \"time\": \"8AM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"تحليل عددي\"\r\n      ],\r\n      \"total_students\": 46\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 13\",\r\n      \"date\": \"2025-06-30\",\r\n      \"day\": \"Monday\",\r\n      \"time\": \"8AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"تحليل عددي\",\r\n        \"ادارة الشبكات\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 8\",\r\n      \"date\": \"2025-07-04\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"8AM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"تقانة الانترنت وبرمجة الويب\"\r\n      ],\r\n      \"total_students\": 31\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 11\",\r\n      \"date\": \"2025-07-04\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"8AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"تقانة الانترنت وبرمجة الويب\",\r\n        \"قواعد معطيات متقدمة\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 28\",\r\n      \"date\": \"2025-07-05\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"8AM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"الخوارزميات وبنى المعطيات\",\r\n        \"الرؤية الحاسوبية\"\r\n      ],\r\n      \"total_students\": 72\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 15\",\r\n      \"date\": \"2025-07-05\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"8AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"الخوارزميات وبنى المعطيات\",\r\n        \"الرؤية الحاسوبية\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 8\",\r\n      \"date\": \"2025-06-27\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"الجودة والوثوقية\"\r\n      ],\r\n      \"total_students\": 31\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 3\",\r\n      \"date\": \"2025-06-27\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"الجودة والوثوقية\",\r\n        \"امن نظم المعلومات\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 30\",\r\n      \"date\": \"2025-06-28\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"أسس الهندسة الكهربائية\",\r\n        \"قواعد البيانات\",\r\n        \"انظمة الوسائط\"\r\n      ],\r\n      \"total_students\": 83\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 28\",\r\n      \"date\": \"2025-06-28\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"أسس الهندسة الكهربائية\",\r\n        \"قواعد البيانات\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 15\",\r\n      \"date\": \"2025-06-28\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 1\",\r\n      \"courses\": [\r\n        \"انظمة الوسائط\"\r\n      ],\r\n      \"total_students\": 43\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 3\",\r\n      \"date\": \"2025-06-29\",\r\n      \"day\": \"Sunday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"الرياضيات 2\",\r\n        \"تراسل 1\"\r\n      ],\r\n      \"total_students\": 58\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 18\",\r\n      \"date\": \"2025-06-29\",\r\n      \"day\": \"Sunday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"الرياضيات 2\",\r\n        \"تراسل 1\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 3\",\r\n      \"date\": \"2025-06-30\",\r\n      \"day\": \"Monday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"قواعد معطيات 1\",\r\n        \"النمذجة والمحاكاة\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 7\",\r\n      \"date\": \"2025-07-01\",\r\n      \"day\": \"Tuesday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"مقدمة في تقانة الشبكات\",\r\n        \"هندسة البرمجيات 1\",\r\n        \"تصميم الشبكات\"\r\n      ],\r\n      \"total_students\": 51\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 12\",\r\n      \"date\": \"2025-07-01\",\r\n      \"day\": \"Tuesday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"مقدمة في تقانة الشبكات\",\r\n        \"هندسة البرمجيات 1\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 8\",\r\n      \"date\": \"2025-07-04\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"كيمياء\",\r\n        \"تنظيم وبنيان الحواسيب\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 18\",\r\n      \"date\": \"2025-07-04\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"تنظيم وبنيان الحواسيب\"\r\n      ],\r\n      \"total_students\": 24\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 28\",\r\n      \"date\": \"2025-07-05\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"مدخل الى الخوارزميات\"\r\n      ],\r\n      \"total_students\": 34\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 15\",\r\n      \"date\": \"2025-07-05\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"10AM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"مدخل الى الخوارزميات\",\r\n        \"تراسل 2\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 18\",\r\n      \"date\": \"2025-06-27\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 1\",\r\n      \"courses\": [\r\n        \"الرسم الهندسي\"\r\n      ],\r\n      \"total_students\": 13\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 11\",\r\n      \"date\": \"2025-06-27\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"الرسم الهندسي\",\r\n        \"نظرية الحوسبة\"\r\n      ],\r\n      \"total_students\": 83\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 3\",\r\n      \"date\": \"2025-06-27\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"الرسم الهندسي\",\r\n        \"نظرية الحوسبة\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 13\",\r\n      \"date\": \"2025-06-28\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 1\",\r\n      \"courses\": [\r\n        \"لغة التجميع\"\r\n      ],\r\n      \"total_students\": 48\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 11\",\r\n      \"date\": \"2025-06-29\",\r\n      \"day\": \"Sunday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 1\",\r\n      \"courses\": [\r\n        \"دارات منطقية\"\r\n      ],\r\n      \"total_students\": 35\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 3\",\r\n      \"date\": \"2025-06-29\",\r\n      \"day\": \"Sunday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"دارات منطقية\",\r\n        \"التعلم الالي\",\r\n        \"امن شبكات حاسوبية\"\r\n      ],\r\n      \"total_students\": 83\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 8\",\r\n      \"date\": \"2025-06-29\",\r\n      \"day\": \"Sunday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"بحوث العمليات\",\r\n        \"التعلم الالي\",\r\n        \"امن شبكات حاسوبية\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 6\",\r\n      \"date\": \"2025-06-30\",\r\n      \"day\": \"Monday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"البرمجة غرضية التوجه\"\r\n      ],\r\n      \"total_students\": 32\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 13\",\r\n      \"date\": \"2025-06-30\",\r\n      \"day\": \"Monday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"البرمجة غرضية التوجه\",\r\n        \"برمجة تفرعية\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 7\",\r\n      \"date\": \"2025-07-01\",\r\n      \"day\": \"Tuesday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"مهارات اللغة الانكليزية\",\r\n        \"نظم استرجاع البيانات\"\r\n      ],\r\n      \"total_students\": 78\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 12\",\r\n      \"date\": \"2025-07-01\",\r\n      \"day\": \"Tuesday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"مهارات اللغة الانكليزية\",\r\n        \"نظم استرجاع البيانات\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 8\",\r\n      \"date\": \"2025-07-04\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 1\",\r\n      \"courses\": [\r\n        \"رياضيات متقطعة\",\r\n        \"الرجل الالي\"\r\n      ],\r\n      \"total_students\": 80\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 7\",\r\n      \"date\": \"2025-07-05\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"الميكانيك الهندسي\",\r\n        \"مدخل الى الذكاء الصنعي\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 6\",\r\n      \"date\": \"2025-07-05\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"12PM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"مدخل الى الذكاء الصنعي\"\r\n      ],\r\n      \"total_students\": 3\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 11\",\r\n      \"date\": \"2025-06-27\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 1\",\r\n      \"courses\": [\r\n        \"برمجة النظم\"\r\n      ],\r\n      \"total_students\": 48\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 30\",\r\n      \"date\": \"2025-06-28\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"تطوير التطبيقات\",\r\n        \"بناء المترجمات\",\r\n        \"الشبكات اللاسلكية\"\r\n      ],\r\n      \"total_students\": 83\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 28\",\r\n      \"date\": \"2025-06-28\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"تطوير التطبيقات\",\r\n        \"بناء المترجمات\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 15\",\r\n      \"date\": \"2025-06-28\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 1\",\r\n      \"courses\": [\r\n        \"الشبكات اللاسلكية\"\r\n      ],\r\n      \"total_students\": 21\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 11\",\r\n      \"date\": \"2025-06-29\",\r\n      \"day\": \"Sunday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"رياضيات 1\"\r\n      ],\r\n      \"total_students\": 6\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 1\",\r\n      \"date\": \"2025-06-29\",\r\n      \"day\": \"Sunday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"رياضيات 1\",\r\n        \"نظم تشغيل\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 6\",\r\n      \"date\": \"2025-06-30\",\r\n      \"day\": \"Monday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"تطبيقات في الاحصاء الهندسي\",\r\n        \"قواعد المعطيات 2\",\r\n        \"هندسة برمجيات2\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 13\",\r\n      \"date\": \"2025-06-30\",\r\n      \"day\": \"Monday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"قواعد المعطيات 2\",\r\n        \"هندسة برمجيات2\"\r\n      ],\r\n      \"total_students\": 68\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 7\",\r\n      \"date\": \"2025-07-01\",\r\n      \"day\": \"Tuesday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 1\",\r\n      \"courses\": [\r\n        \"مدخل إلى البرمجة\",\r\n        \"نظم ادارية\"\r\n      ],\r\n      \"total_students\": 55\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 17\",\r\n      \"date\": \"2025-07-01\",\r\n      \"day\": \"Tuesday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"نمذجة ومحاكاة\",\r\n        \"نظم ادارية\"\r\n      ],\r\n      \"total_students\": 83\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 12\",\r\n      \"date\": \"2025-07-01\",\r\n      \"day\": \"Tuesday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"نمذجة ومحاكاة\",\r\n        \"نظم ادارية\"\r\n      ],\r\n      \"total_students\": 86\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 3\",\r\n      \"date\": \"2025-07-04\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 4\",\r\n      \"courses\": [\r\n        \"رياضيات 3\"\r\n      ],\r\n      \"total_students\": 39\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 12\",\r\n      \"date\": \"2025-07-04\",\r\n      \"day\": \"Friday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"رياضيات 3\"\r\n      ],\r\n      \"total_students\": 57\r\n    },\r\n    {\r\n      \"supervisor\": \"Observer 13\",\r\n      \"date\": \"2025-07-05\",\r\n      \"day\": \"Saturday\",\r\n      \"time\": \"2PM\",\r\n      \"hall\": \"القاعة رقم 6\",\r\n      \"courses\": [\r\n        \"مدخل الى علوم الحاسوب\"\r\n      ],\r\n      \"total_students\": 69\r\n    }\r\n  ],\r\n  \"supervision_tasks\": {\r\n    \"Observer 3\": 6,\r\n    \"Observer 8\": 6,\r\n    \"Observer 11\": 5,\r\n    \"Observer 12\": 5,\r\n    \"Observer 13\": 5,\r\n    \"Observer 15\": 5,\r\n    \"Observer 17\": 1,\r\n    \"Observer 18\": 3,\r\n    \"Observer 19\": 0,\r\n    \"Observer 21\": 0,\r\n    \"Observer 28\": 5,\r\n    \"Observer 30\": 3,\r\n    \"Observer 31\": 0,\r\n    \"Observer 1\": 1,\r\n    \"Observer 6\": 4,\r\n    \"Observer 7\": 4,\r\n    \"Observer 14\": 0,\r\n    \"Observer 24\": 0,\r\n    \"Observer 26\": 0,\r\n    \"Observer 29\": 0,\r\n    \"Observer 4\": 0,\r\n    \"Observer 10\": 0,\r\n    \"Observer 16\": 0,\r\n    \"Observer 25\": 0,\r\n    \"Observer 27\": 0,\r\n    \"Observer 2\": 0,\r\n    \"Observer 5\": 0,\r\n    \"Observer 9\": 0,\r\n    \"Observer 20\": 0,\r\n    \"Observer 22\": 0,\r\n    \"Observer 23\": 0\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/distribution",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"distribution"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Observer",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/searchObserver/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"searchObserver",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Day",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/searchDay/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"searchDay",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Subject",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/searchSubject/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"searchSubject",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Hall",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/searchHall/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"searchHall",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cheating Incidents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/CheatingIncidents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"CheatingIncidents"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
