@@ -1107,7 +1107,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"value": "Bearer 1|aeFJw0aCu7YOE1qf8Oyy7nXloY0PlTlTPmhmmvGG",
 								"type": "text"
 							}
 						],
@@ -1194,7 +1194,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 1|Qo1Gq9FrMdKPjufbBFt4KFj0DCnJd2fBHxGxZoM4",
+								"value": "Bearer 1|aeFJw0aCu7YOE1qf8Oyy7nXloY0PlTlTPmhmmvGG",
 								"type": "text"
 							}
 						],
@@ -1377,6 +1377,222 @@
 							"path": [
 								"api",
 								"CheatingIncidents"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Observer App",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"observer1@example.com\",\r\n    \"password\": \"111q\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|hyr30nj2Ps1PNxde6GUCRo9JdQ8Dbadb49zbKjfx",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|w7rusAyueD7JzO7Qw7W4rUdmulAmiBUlKTdfKQpE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/showprofileuser",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"showprofileuser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 3|eAfXKovLBI2niFHdhvjtZ9qQ1YEPSuig9Cjl6bnS",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Observer 1\",\r\n    \"email\": \"observer1@example.com\",\r\n    \"password\": \"111q\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/updateprofileuser",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"updateprofileuser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pending Cheating Incidents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|w7rusAyueD7JzO7Qw7W4rUdmulAmiBUlKTdfKQpE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/PendingCheatingIncidents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"PendingCheatingIncidents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cheating ncidents",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|w7rusAyueD7JzO7Qw7W4rUdmulAmiBUlKTdfKQpE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Dealing_with_cheating\":\"تم معالجة الوضع بنجاح\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/updateCheatingIncidents/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"updateCheatingIncidents",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Observer schedule",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 2|w7rusAyueD7JzO7Qw7W4rUdmulAmiBUlKTdfKQpE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/getObserverschedule",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"getObserverschedule"
 							]
 						}
 					},
