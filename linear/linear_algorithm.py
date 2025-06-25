@@ -1,231 +1,3 @@
-
-# from fastapi import FastAPI, HTTPException
-# from fastapi.middleware.cors import CORSMiddleware
-# from pydantic import BaseModel
-# from typing import List, Dict
-# from ortools.linear_solver import pywraplp
-# from ortools.sat.python import cp_model
-# import mysql.connector
-# import os
-
-# app = FastAPI()
-
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
-# DB_CONFIG = {
-#     "host": os.getenv("DB_HOST", "127.0.0.1"),
-#     "user": os.getenv("DB_USER", "root"),
-#     "password": os.getenv("DB_PASS", ""),
-#     "database": os.getenv("DB_NAME", "laravel_db"),
-# }
-
-# # ========== نماذج ==========
-
-# class ScheduleItem(BaseModel):
-#     day: str
-#     time: str
-#     room: str
-
-# class Supervisor(BaseModel):
-#     name: str
-#     available_days: List[str]
-
-# # ========== جلب البيانات من MySQL ==========
-
-# def fetch_exam_data():
-#     conn = mysql.connector.connect(**DB_CONFIG)
-#     cursor = conn.cursor(dictionary=True)
-
-#     # جلب بيانات المواد وجدول الامتحانات
-#     cursor.execute("""
-#         SELECT s.name, s.student_number, sch.exam_days_id AS day, sch.time_id AS time
-#         FROM subjects s
-#         JOIN schedule sch ON sch.subject_id = s.id
-#     """)
-#     courses = cursor.fetchall()
-
-#     # جلب القاعات مع الموقع (location) وعدد الكراسي (chair_number)
-#     cursor.execute("SELECT location, chair_number FROM halls")
-#     halls_data = cursor.fetchall()
-
-#     # تحويل القاعات إلى قاموس: الموقع → عدد الكراسي
-#     halls = {row["location"]: row["chair_number"] for row in halls_data}
-
-#     cursor.close()
-#     conn.close()
-#     return courses, halls
-
-
-# def fetch_supervision_data():
-#     conn = mysql.connector.connect(**DB_CONFIG)
-#     cursor = conn.cursor(dictionary=True)
-
-#     cursor.execute("SELECT DISTINCT id, exam_days_id AS day, time_id AS time FROM schedule")
-#     sessions = cursor.fetchall()
-
-#     cursor.execute("SELECT user_name, day FROM working_days_for_users")
-#     raw_supervisors = cursor.fetchall()
-
-#     supervisors: Dict[str, List[str]] = {}
-#     for row in raw_supervisors:
-#         name, day = row["user_name"], row["day"]
-#         if name not in supervisors:
-#             supervisors[name] = []
-#         if day not in supervisors[name]:
-#             supervisors[name].append(day)
-
-#     cursor.close()
-#     conn.close()
-#     return supervisors, sessions
-
-# # ========== توزيع الطلاب على القاعات ==========
-
-# def solve_schedule(courses_data, rooms):
-#     class C:
-#         def __init__(self, d):
-#             self.day = str(d["day"])
-#             self.time = str(d["time"])
-#             self.name = d["name"]
-#             self.students = int(d["student_number"])
-
-#     courses = [C(r) for r in courses_data]
-#     schedule_groups = {}
-#     for c in courses:
-#         key = (c.day, c.time)
-#         schedule_groups.setdefault(key, []).append(c)
-
-#     result = {}
-#     for (day, time), group in schedule_groups.items():
-#         solver = pywraplp.Solver.CreateSolver("SCIP")
-#         if not solver:
-#             raise HTTPException(status_code=500, detail="Solver not available")
-
-#         assign, used, extras = {}, {}, []
-
-#         for i, course in enumerate(group):
-#             for room in rooms:
-#                 assign[(i, room)] = solver.IntVar(0, rooms[room], f"x_{i}_{room}")
-#         for room in rooms:
-#             used[room] = solver.BoolVar(f"u_{room}")
-
-#         for i, course in enumerate(group):
-#             solver.Add(solver.Sum(assign[(i, r)] for r in rooms) == course.students)
-
-#         for room in rooms:
-#             solver.Add(
-#                 solver.Sum(assign[(i, room)] for i in range(len(group)))
-#                 <= rooms[room] * used[room]
-#             )
-
-#         for i, course in enumerate(group):
-#             for room in rooms:
-#                 thr = int(rooms[room] * 2 / 3)
-#                 ex = solver.IntVar(0, rooms[room], f"e_{i}_{room}")
-#                 extras.append(ex)
-#                 solver.Add(assign[(i, room)] <= thr + ex)
-
-#         solver.Minimize(solver.Sum(used.values()) + 0.01 * solver.Sum(extras))
-
-#         status = solver.Solve()
-#         key = f"{day} {time}"
-#         if status == pywraplp.Solver.OPTIMAL:
-#             out = {}
-#             for i, course in enumerate(group):
-#                 out[course.name] = {}
-#                 for room in rooms:
-#                     val = int(assign[(i, room)].solution_value())
-#                     if val > 0:
-#                         out[course.name][room] = val
-#             result[key] = out
-#         else:
-#             result[key] = "no solution"
-
-#     return {"status": "ok", "schedule": result}
-
-# # ========== توزيع المراقبين ==========
-
-# def solve_supervision(supervisors, sessions):
-#     model = cp_model.CpModel()
-#     assign = {}
-
-#     exam_sessions = [(str(s["day"]), str(s["time"]), str(s["id"])) for s in sessions]
-#     supervisor_names = list(supervisors.keys())
-
-#     for s in supervisor_names:
-#         for (day, time, session_id) in exam_sessions:
-#             assign[(s, day, time, session_id)] = model.NewBoolVar(f'assign_{s}_{day}_{time}_{session_id}')
-
-#     for (day, time, session_id) in exam_sessions:
-#         model.AddExactlyOne(assign[(s, day, time, session_id)] for s in supervisor_names)
-
-#     time_slots = set((d, t) for (d, t, _) in exam_sessions)
-#     for s in supervisor_names:
-#         for (day, time) in time_slots:
-#             model.Add(sum(assign[(s, d, t, sid)] for (d, t, sid) in exam_sessions if (d, t) == (day, time)) <= 1)
-
-#     for s in supervisor_names:
-#         for (day, time, session_id) in exam_sessions:
-#             if day not in supervisors[s]:
-#                 model.Add(assign[(s, day, time, session_id)] == 0)
-
-#     task_count = {}
-#     max_tasks = model.NewIntVar(0, len(exam_sessions), "max_tasks")
-#     min_tasks = model.NewIntVar(0, len(exam_sessions), "min_tasks")
-#     for s in supervisor_names:
-#         task_count[s] = model.NewIntVar(0, len(exam_sessions), f'task_count_{s}')
-#         model.Add(task_count[s] == sum(assign[(s, d, t, sid)] for (d, t, sid) in exam_sessions))
-#         model.Add(task_count[s] <= max_tasks)
-#         model.Add(task_count[s] >= min_tasks)
-
-#     model.Minimize(max_tasks - min_tasks)
-
-#     solver = cp_model.CpSolver()
-#     status = solver.Solve(model)
-
-#     result = {"status": "no_solution", "assignments": [], "task_count": {}}
-#     if status in [cp_model.OPTIMAL, cp_model.FEASIBLE]:
-#         result["status"] = "ok"
-#         for (day, time, session_id) in exam_sessions:
-#             for s in supervisor_names:
-#                 if solver.Value(assign[(s, day, time, session_id)]) == 1:
-#                     result["assignments"].append({
-#                         "supervisor": s,
-#                         "day": day,
-#                         "time": time,
-#                         "session_id": session_id
-#                     })
-#         result["task_count"] = {s: solver.Value(task_count[s]) for s in supervisor_names}
-
-#     return result
-
-# # ========== نقطة النهاية الرئيسية ==========
-
-# @app.get("/generate-full-schedule")
-# def generate_full_schedule():
-#     try:
-#         courses_data, halls = fetch_exam_data()
-#         supervisors, sessions = fetch_supervision_data()
-
-#         schedule_result = solve_schedule(courses_data, halls)
-#         supervision_result = solve_supervision(supervisors, sessions)
-
-#         return {
-#             "status": "ok",
-#             "schedule_distribution": schedule_result["schedule"],
-#             "supervision_assignment": supervision_result["assignments"],
-#             "supervision_tasks": supervision_result["task_count"]
-#         }
-
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -244,7 +16,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+ 
 DB_CONFIG = {
     "host": os.getenv("DB_HOST", "127.0.0.1"),
     "user": os.getenv("DB_USER", "root"),
@@ -254,25 +26,24 @@ DB_CONFIG = {
 
 
 class ScheduleItem(BaseModel):
-    date: str  # إضافة
+    date: str
     day: str
     time: str
     room: str
 
-
-class SupervisorAssignment(BaseModel):  # نموذج جديد
+class SupervisorAssignment(BaseModel):
     supervisor: str
     date: str
     day: str
     time: str
-    session_id: str
-
+    hall: str
+    courses: List[str]
+    total_students: int
 
 def fetch_exam_data():
     conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor(dictionary=True)
 
-    # جلب بيانات المواد وجدول الامتحانات مع التاريخ
     cursor.execute("""
         SELECT s.name, s.student_number, ed.day AS day, ed.date AS date, et.time AS time
         FROM subjects s
@@ -286,7 +57,6 @@ def fetch_exam_data():
     """)
     courses = cursor.fetchall()
 
-    # جلب القاعات مع الموقع (location) وعدد الكراسي (chair_number)
     cursor.execute("""
         SELECT location, chair_number 
         FROM halls 
@@ -294,19 +64,17 @@ def fetch_exam_data():
     """)
     halls_data = cursor.fetchall()
 
-    # تحويل القاعات إلى قاموس: الموقع → عدد الكراسي
     halls = {row["location"]: row["chair_number"] for row in halls_data}
 
     cursor.close()
     conn.close()
     return courses, halls
 
-
 def fetch_supervision_data():
     conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor(dictionary=True)
 
-    # جلب جلسات الامتحانات مع التاريخ
+    # جلب جلسات الامتحانات مع التاريخ (بدون معلومات القاعة)
     cursor.execute("""
         SELECT sch.id, ed.day AS day, ed.date AS date, et.time AS time
         FROM schedule sch
@@ -317,8 +85,8 @@ def fetch_supervision_data():
         AND et.deleted_at IS NULL
     """)
     sessions = cursor.fetchall()
-
-    # جلب المراقبين
+    
+    # بقية الدالة تبقى كما هي...
     cursor.execute("""
         SELECT u.name, wd.day
         FROM users u
@@ -340,22 +108,17 @@ def fetch_supervision_data():
 
     cursor.close()
     conn.close()
-
-    # تسجيل البيانات للتصحيح
+    
     print("عدد جلسات الامتحانات:", len(sessions))
-    print("عينة من جلسات الامتحانات:", sessions[:1])  # طباعة أول جلسة كمثال
     print("عدد المراقبين:", len(supervisors))
-
+    
     return supervisors, sessions
-
-
-# ========== توزيع الطلاب على القاعات ==========
 
 def solve_schedule(courses_data, rooms):
     class C:
         def __init__(self, d):
             self.day = str(d["day"])
-            self.date = str(d["date"])  # إضافة التاريخ
+            self.date = str(d["date"])
             self.time = str(d["time"])
             self.name = d["name"]
             self.students = int(d["student_number"])
@@ -363,7 +126,7 @@ def solve_schedule(courses_data, rooms):
     courses = [C(r) for r in courses_data]
     schedule_groups = {}
     for c in courses:
-        key = (c.date, c.day, c.time)  # إضافة التاريخ كمفتاح
+        key = (c.date, c.day, c.time)
         schedule_groups.setdefault(key, []).append(c)
 
     result = {}
@@ -399,7 +162,7 @@ def solve_schedule(courses_data, rooms):
         solver.Minimize(solver.Sum(used.values()) + 0.01 * solver.Sum(extras))
 
         status = solver.Solve()
-        key = f"{date} {day} {time}"  # تعديل المفتاح ليشمل التاريخ
+        key = f"{date} {day} {time}"
         if status == pywraplp.Solver.OPTIMAL:
             out = {}
             for i, course in enumerate(group):
@@ -415,9 +178,7 @@ def solve_schedule(courses_data, rooms):
     return {"status": "ok", "schedule": result}
 
 
-# ========== توزيع المراقبين ==========
-
-def solve_supervision(supervisors, sessions):
+def solve_supervision(supervisors, sessions, schedule_distribution):
     if not supervisors or not sessions:
         return {
             "status": "error",
@@ -429,125 +190,135 @@ def solve_supervision(supervisors, sessions):
     model = cp_model.CpModel()
     assign = {}
 
-    # تحضير بيانات الجلسات مع التحقق من الهيكل
-    exam_sessions = []
-    for s in sessions:
+    # 1. استخلاص توزيع القاعات من schedule_distribution
+    hall_assignments = {}
+    for time_slot, courses in schedule_distribution.items():
+        if isinstance(courses, str) and courses == "no solution":
+            continue
+            
         try:
-            # التأكد من وجود جميع الحقول المطلوبة
-            required_fields = ['id', 'day', 'date', 'time']
-            if not all(field in s for field in required_fields):
-                print(f"تحذير: جلسة ناقصة البيانات: {s}")
-                continue
-
-            session_data = (
-                str(s['date']),    # التاريخ
-                str(s['day']).strip().lower(),  # اليوم
-                str(s['time']).strip().lower(), # الوقت
-                str(s['id'])      # معرف الجلسة
-            )
-            exam_sessions.append(session_data)
+            date, day, time = time_slot.split()[:3]
+            for course, halls in courses.items():
+                if isinstance(halls, dict):
+                    for hall, students in halls.items():
+                        key = (date, day, time, hall)
+                        if key not in hall_assignments:
+                            hall_assignments[key] = {
+                                "courses": [],
+                                "total_students": 0
+                            }
+                        hall_assignments[key]["courses"].append(course)
+                        hall_assignments[key]["total_students"] += students
         except Exception as e:
-            print(f"تحذير: خطأ في معالجة الجلسة {s}: {str(e)}")
+            print(f"خطأ في معالجة بيانات القاعات: {e}")
             continue
 
-    if not exam_sessions:
+    if not hall_assignments:
         return {
             "status": "error",
-            "message": "لا توجد جلسات صالحة للتوزيع",
+            "message": "لا توجد قاعات مجدولة",
             "assignments": [],
             "task_count": {}
         }
 
+    # 2. إنشاء متغيرات القرار
     supervisor_names = list(supervisors.keys())
-
-    # 1. إنشاء متغيرات القرار مع الهيكل الصحيح
+    hall_slots = list(hall_assignments.keys())
+    
+    # متغيرات القرار: هل المراقب s مكلف بالقاعة hall في الوقت المحدد؟
     for s in supervisor_names:
-        for session in exam_sessions:
-            # تفريغ القيم حسب الهيكل المتوقع
-            date, day, time, session_id = session
-            assign[(s, date, day, time, session_id)] = model.NewBoolVar(f'assign_{s}_{date}_{day}_{time}_{session_id}')
+        for slot in hall_slots:
+            assign[(s, *slot)] = model.NewBoolVar(f'assign_{s}_{"_".join(str(x) for x in slot)}')
 
-    # 2. كل جلسة يجب أن يكون لها مراقب واحد بالضبط
-    for session in exam_sessions:
-        date, day, time, session_id = session
+    # 3. القيود الأساسية
+    # أ. مراقب واحد بالضبط لكل قاعة
+    for slot in hall_slots:
+        date, day, time, hall = slot
         available_supervisors = [
             s for s in supervisor_names 
-            if day in [d.lower().strip() for d in supervisors[s]]
+            if day.lower() in [d.lower() for d in supervisors[s]]
         ]
-
         if not available_supervisors:
-            print(f"تحذير: لا يوجد مراقبون متاحون لجلسة {date} {day} {time}")
+            print(f"تحذير: لا يوجد مراقبون متاحون للقاعة {hall} في {date} {time}")
             continue
-
+            
         model.AddExactlyOne(
-            assign[(s, date, day, time, session_id)] 
-            for s in available_supervisors
+            assign[(s, *slot)] for s in available_supervisors
         )
 
-    # 3. لا يمكن للمراقب أن يكون في أكثر من جلسة في نفس الوقت (نفس التاريخ والوقت)
-    time_slots = set((date, day, time) for (date, day, time, _) in exam_sessions)
+    # ب. لا يمكن للمراقب أن يكون في أكثر من قاعة في نفس الوقت
+    time_slots = set((date, day, time) for (date, day, time, hall) in hall_slots)
     for s in supervisor_names:
         for slot in time_slots:
-            date, day, time = slot
             model.Add(
                 sum(
-                    assign[(s, dt, d, t, sid)] 
-                    for (dt, d, t, sid) in exam_sessions 
-                    if (dt, d, t) == (date, day, time)
+                    assign.get((s, *slot, hall), 0)
+                    for hall in [h for (d, dy, t, h) in hall_slots 
+                               if (d, dy, t) == slot]
                 ) <= 1
             )
 
-    # 4. موازنة عدد المهام بين المراقبين
-    task_count = {}
-    max_tasks = model.NewIntVar(0, len(exam_sessions), "max_tasks")
-    min_tasks = model.NewIntVar(0, len(exam_sessions), "min_tasks")
-
+    # 4. تحقيق التوزيع العادل
+    # أ. حساب عدد المهام لكل مراقب
+    task_counts = []
     for s in supervisor_names:
-        task_count[s] = model.NewIntVar(0, len(exam_sessions), f'task_count_{s}')
+        task_count = model.NewIntVar(0, len(hall_slots), f'tasks_{s}')
         model.Add(
-            task_count[s] == sum(
-                assign[(s, date, day, time, sid)] 
-                for (date, day, time, sid) in exam_sessions
+            task_count == sum(
+                assign[(s, *slot)] for slot in hall_slots
             )
         )
-        model.Add(task_count[s] <= max_tasks)
-        model.Add(task_count[s] >= min_tasks)
+        task_counts.append(task_count)
 
+    # ب. حساب الحد الأدنى والأقصى للمهام
+    max_tasks = model.NewIntVar(0, len(hall_slots), 'max_tasks')
+    min_tasks = model.NewIntVar(0, len(hall_slots), 'min_tasks')
+    
+    for s in supervisor_names:
+        model.Add(task_counts[supervisor_names.index(s)] >= min_tasks)
+        model.Add(task_counts[supervisor_names.index(s)] <= max_tasks)
+
+    # ج. تقليل الفرق بين الحد الأقصى والأدنى
     model.Minimize(max_tasks - min_tasks)
 
+    # 5. حل النموذج
     solver = cp_model.CpSolver()
-    solver.parameters.max_time_in_seconds = 30.0
+    solver.parameters.max_time_in_seconds = 60.0  # زيادة وقت الحل
+    solver.parameters.num_search_workers = 4  # استخدام عدة نوى معالجة
     status = solver.Solve(model)
 
+    # 6. تجميع النتائج
     result = {
-        "status": "no_solution",
+        "status": "ok" if status in [cp_model.OPTIMAL, cp_model.FEASIBLE] else "no_solution",
         "assignments": [],
-        "task_count": {},
-        "message": ""
+        "task_count": {s: 0 for s in supervisor_names},
+        "message": solver.StatusName(status) if status != cp_model.OPTIMAL else ""
     }
 
-    if status in [cp_model.OPTIMAL, cp_model.FEASIBLE]:
-        result["status"] = "ok"
-        for session in exam_sessions:
-            date, day, time, session_id = session
+    if result["status"] == "ok":
+        assigned_slots = set()  # لتتبع القاعات التي تم تعيينها
+        
+        for slot in hall_slots:
+            date, day, time, hall = slot
             for s in supervisor_names:
-                if solver.Value(assign[(s, date, day, time, session_id)]) == 1:
-                    result["assignments"].append({
-                        "supervisor": s,
-                        "date": date,
-                        "day": day,
-                        "time": time,
-                        "session_id": session_id
-                    })
-        result["task_count"] = {s: solver.Value(task_count[s]) for s in supervisor_names}
-    else:
-        result["message"] = solver.StatusName(status)
-        print(f"فشل في إيجاد حل. الحالة: {solver.StatusName(status)}")
+                if solver.Value(assign[(s, *slot)]) == 1:
+                    if slot not in assigned_slots:
+                        result["assignments"].append({
+                            "supervisor": s,
+                            "date": date,
+                            "day": day,
+                            "time": time,
+                            "hall": hall,
+                            "courses": hall_assignments[slot]["courses"],
+                            "total_students": hall_assignments[slot]["total_students"]
+                        })
+                        result["task_count"][s] += 1
+                        assigned_slots.add(slot)
+                    else:
+                        print(f"تحذير: تم تعيين أكثر من مراقب للقاعة {hall} في {date} {time}")
 
     return result
 
-
-# ========== نقطة النهاية الرئيسية ==========
 
 @app.get("/generate-full-schedule")
 def generate_full_schedule():
@@ -555,12 +326,8 @@ def generate_full_schedule():
         courses_data, halls = fetch_exam_data()
         supervisors, sessions = fetch_supervision_data()
 
-        # تسجيل البيانات للتصحيح
-        print(f"تم جلب {len(courses_data)} مادة و{len(halls)} قاعة")
-        print(f"تم جلب {len(supervisors)} مراقب و{len(sessions)} جلسة امتحان")
-
         schedule_result = solve_schedule(courses_data, halls)
-        supervision_result = solve_supervision(supervisors, sessions)
+        supervision_result = solve_supervision(supervisors, sessions, schedule_result["schedule"])
 
         return {
             "status": "ok",
@@ -572,3 +339,4 @@ def generate_full_schedule():
     except Exception as e:
         print(f"حدث خطأ: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
