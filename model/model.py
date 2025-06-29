@@ -28,6 +28,9 @@ font_path = "arial.ttf"  # تأكد من وجود الخط
 
 # تحميل الموديلات
 model = YOLO('C:/Users/Ali/Downloads/Hul-E.v3i.coco/themodel2222/yolov8_exp1/weights/best.pt')
+model_phone = YOLO("C:/Users/Ali/Downloads/phonee/themodel/yolov8_exp12/weights/best.pt")
+
+
 pose = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
 tracker = DeepSort(max_age=30)
 
@@ -136,10 +139,28 @@ class KalmanFilter2D:
     def predict(self):
         prediction = self.kalman.predict()
         return prediction[:2].flatten()
+    
+# --- تحميل ميزات صور الآلة الحاسبة مرة واحدة فقط ---
+sift = cv2.SIFT_create()
+bf = cv2.BFMatcher()
+calculator_descriptors = []
+
+calculator_images = glob.glob("img/*.jpg") + glob.glob("img/*.png") + glob.glob("img/*.jpeg")
+for path in calculator_images:
+    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    if img is not None:
+        img = cv2.resize(img, (200, 200))
+        kp, des = sift.detectAndCompute(img, None)
+        if des is not None:
+            calculator_descriptors.append(des)
+
+
 
 
 def process_frame(frame):
     global hand_outside_zone_start, previous_wrist_positions, alerted_ids, head_rotation_start
+    global calculator_descriptors, sift, bf
+
 
     frame_height, frame_width = frame.shape[:2]
 
@@ -159,9 +180,7 @@ def process_frame(frame):
     results = model(frame)[0]
     raw_detections = []
     current_hand_centers = []
-    sift = cv2.SIFT_create()
-    bf = cv2.BFMatcher()
-    calculator_descriptors = [] 
+    
 
     def is_calculator(device_img):
         gray = cv2.cvtColor(device_img, cv2.COLOR_BGR2GRAY)
@@ -213,7 +232,7 @@ def process_frame(frame):
     kalman_filters = getattr(process_frame, "kalman_filters", {})
     in_hand_start = getattr(process_frame, "in_hand_start", {})
 
-    device_results = model(frame)[0]
+    device_results = model_phone(frame)[0]
     for r in device_results.boxes:
         conf = float(r.conf[0])
         if conf > 0.5:
