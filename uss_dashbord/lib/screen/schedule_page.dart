@@ -47,7 +47,8 @@ class SchedulePage extends StatefulWidget {
 }
 
 class _SchedulePageState extends State<SchedulePage> {
-  Map<String, Map<String, Map<String, Map<String, dynamic>>>>? scheduleData;
+  Map<String, Map<String, Map<String, Map<String, dynamic>>>> scheduleData = {};
+
   bool isLoading = false;
   String? errorMessage;
   @override
@@ -57,69 +58,89 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   Future<void> fetchStructuredDistribution() async {
-    setState(() {
-      isLoading = true;
-      errorMessage = null;
-    });
+  setState(() {
+    isLoading = true;
+    errorMessage = null;
+  });
 
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
-      var headers = {'Authorization': 'Bearer $token'};
-      var dio = Dio();
-      var response = await dio.request(
-        'http://localhost:8000/api/distribution',
-        options: Options(
-          method: 'GET',
-          headers: headers,
-        ),
-      );
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    var headers = {'Authorization': 'Bearer $token'};
+    var dio = Dio();
+    var response = await dio.request(
+      'http://localhost:8000/api/distribution',
+      options: Options(
+        method: 'GET',
+        headers: headers,
+      ),
+    );
 
-      if (response.statusCode == 200) {
-        final structured =
-            response.data['structured_distribution'] as Map<String, dynamic>;
+    if (response.statusCode == 200) {
+      print(response.data['structured_distribution'].runtimeType);
+print(response.data['structured_distribution']);
 
-        final result =
-            <String, Map<String, Map<String, Map<String, dynamic>>>>{};
+     final rawStructured = response.data['structured_distribution'];
 
-        structured.forEach((dayKey, timeMap) {
-          result[dayKey] = {};
-          (timeMap as Map<String, dynamic>).forEach((time, hallsMap) {
-            result[dayKey]![time] = {};
-            (hallsMap as Map<String, dynamic>).forEach((hall, details) {
-              final subjects = List<String>.from(details['subjects'] ?? []);
-              final supervisors =
-                  List<String>.from(details['supervisors'] ?? []);
+if (rawStructured is! Map<String, dynamic>) {
+  print("⚠️ Error: structured_distribution is not a map");
+  setState(() {
+    errorMessage = 'اضغط على زر "توزيع" لبدء الحساب';
+    isLoading = false;
+  });
+  return;
+}
 
-              result[dayKey]![time]![hall] = {
-                'supervisor': supervisors.isNotEmpty ? supervisors.first : null,
-                'materials': {
-                  for (var subject in subjects)
-                    subject: 0, // عدد الطلاب غير موجود
-                },
-              };
-            });
+final structured = rawStructured as Map<String, dynamic>;
+
+      final result =
+          <String, Map<String, Map<String, Map<String, dynamic>>>>{};
+
+      structured.forEach((dayKey, timeMap) {
+        result[dayKey] = {};
+        (timeMap as Map<String, dynamic>).forEach((time, hallsMap) {
+          result[dayKey]![time] = {};
+          (hallsMap as Map<String, dynamic>).forEach((hall, details) {
+            final subjectList = details['subjects'] as List<dynamic>? ?? [];
+            final supervisors = List<String>.from(details['supervisors'] ?? []);
+
+            // تحويل المواد إلى خريطة: name => students_number
+            final materials = <String, int>{};
+            for (var subject in subjectList) {
+              if (subject is Map<String, dynamic>) {
+                final name = subject['name'] as String? ?? 'غير معروف';
+                final students = subject['students_number'] as int? ?? 0;
+                materials[name] = students;
+              }
+            }
+
+            result[dayKey]![time]![hall] = {
+              'supervisor': supervisors.isNotEmpty ? supervisors.first : null,
+              'materials': materials,
+            };
           });
         });
+      });
 
-        setState(() {
-          scheduleData = result;
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          errorMessage = response.statusMessage;
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      print(e);
       setState(() {
-        errorMessage = e.toString();
+        scheduleData = result;
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        errorMessage = response.statusMessage;
         isLoading = false;
       });
     }
+  } catch (e) {
+    print(e);
+    setState(() {
+      errorMessage = e.toString();
+      isLoading = false;
+    });
   }
+}
+
 
   Future<void> fetchData() async {
     setState(() {
@@ -202,7 +223,7 @@ class _SchedulePageState extends State<SchedulePage> {
         scheduleData = result;
         isLoading = false;
       });
-      await senddistribution(result);
+    
     } catch (e) {
       print(e);
       setState(() {
@@ -211,40 +232,103 @@ class _SchedulePageState extends State<SchedulePage> {
       });
     }
   }
+Map<String, dynamic> buildRequestPayload(Map<String, dynamic> schedule) {
+  final scheduleDistribution = <String, Map<String, Map<String, int>>>{};
+  final supervisionAssignment = <Map<String, dynamic>>[];
+  final supervisionTasks = <String, int>{};
 
-  Future<void> senddistribution(dynamic data) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json'
-    };
+  schedule.forEach((dayWithDate, times) {
+    final dayMatch = RegExp(r'^(\w+)\s+\(([\d-]+)\)$').firstMatch(dayWithDate);
+    if (dayMatch == null) return;
 
-    json.encode(data);
-    var dio = Dio();
-    var response = await dio.request(
+    final day = dayMatch.group(1)!;
+    final date = dayMatch.group(2)!;
+
+    (times as Map<String, dynamic>).forEach((time, halls) {
+      final scheduleKey = "$date $day $time";
+      final courseMap = <String, Map<String, int>>{};
+
+      (halls as Map<String, dynamic>).forEach((hall, info) {
+        final supervisor = info['supervisor'] ?? 'غير معروف';
+        final materials = info['materials'] as Map<String, dynamic>;
+
+        // لتجميع بيانات المواد ضمن schedule_distribution
+        materials.forEach((course, students) {
+          courseMap.putIfAbsent(course, () => {});
+          courseMap[course]![hall] = students;
+        });
+
+        // لتجميع بيانات الإشراف supervision_assignment
+        supervisionAssignment.add({
+          'supervisor': supervisor,
+          'date': date,
+          'day': day,
+          'time': time,
+          'hall': hall,
+          'courses': materials.keys.toList(),
+          'total_students': materials.values.fold(0, (a, b) => (a + b).toInt())
+,
+        });
+
+        // لتجميع عدد مهام كل مشرف
+        supervisionTasks.update(supervisor, (value) => value + 1, ifAbsent: () => 1);
+      });
+
+      scheduleDistribution[scheduleKey] = courseMap;
+    });
+  });
+
+  return {
+    'status': 'ok',
+    'schedule_distribution': scheduleDistribution,
+    'supervision_assignment': supervisionAssignment,
+    'supervision_tasks': supervisionTasks,
+  };
+}
+
+
+Future<void> senddistribution(Map<String, dynamic> scheduleData) async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token');
+
+  final headers = {
+    'Authorization': 'Bearer $token',
+    'Content-Type': 'application/json',
+  };
+
+  final dio = Dio();
+  final payload = buildRequestPayload(scheduleData);
+
+  try {
+    final response = await dio.post(
       'http://localhost:8000/api/distribution',
-      options: Options(
-        method: 'POST',
-        headers: headers,
-      ),
-      data: data,
+      options: Options(headers: headers),
+      data: payload,
     );
 
-    if (response.statusCode == 201) {
-      print(json.encode(response.data));
+    print('✅ Success: ${response.data}');
+  } on DioException catch (e) {
+    if (e.response != null) {
+      print('❌ Status: ${e.response?.statusCode}');
+      print('❌ Error Response: ${e.response?.data}');
     } else {
-      print(response.statusMessage);
-      print(response);
+      print('❌ Dio Error: ${e.message}');
     }
+    rethrow;
   }
+}
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final days = scheduleData?.keys.toList() ?? [];
+    
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
       appBar: AppBar(
         title: const Text(
           'توزيع الامتحانات',
@@ -261,21 +345,23 @@ class _SchedulePageState extends State<SchedulePage> {
             child: ElevatedButton(
               onPressed: fetchData,
               style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              child: const Text('توزيع'),
+              child: const Text('توزيع',style: TextStyle(
+            
+            color: Colors.white,
+          ),),
             ),
           ),
         ],
       ),
       drawer: const AppDrawer(),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : errorMessage != null
-              ? Center(
-                  child: Text('حدث خطأ: $errorMessage',
-                      style: const TextStyle(color: Colors.red)))
-              : scheduleData == null
-                  ? const Center(child: Text('اضغط على زر "توزيع" لبدء الحساب'))
-                  : buildScheduleTable(scheduleData!, theme),
+     body: isLoading
+    ? const Center(child: CircularProgressIndicator())
+    : errorMessage != null
+        ? Center(child: Text('حدث خطأ: $errorMessage', style: const TextStyle(color: Colors.red)))
+        : ( scheduleData.isEmpty)
+            ? const Center(child: Text('اضغط على زر "توزيع" لبدء الحساب'))
+            : buildScheduleTable(scheduleData, theme),
+
     );
   }
 
@@ -290,8 +376,11 @@ class _SchedulePageState extends State<SchedulePage> {
       child: Column(
         children: [
           TabBar(
+            indicatorColor: Colors.white,
+            unselectedLabelColor: Colors.white,
+            labelColor: Colors.white,
             isScrollable: true,
-            labelColor: theme.primaryColor,
+            
             tabs: days.map((day) => Tab(text: day)).toList(),
           ),
           Expanded(
@@ -307,16 +396,19 @@ class _SchedulePageState extends State<SchedulePage> {
                   child: DataTable(
                     columnSpacing: 30,
                     columns: [
-                      const DataColumn(label: Text('القاعة')),
-                      ...times.map((time) => DataColumn(label: Text(time))),
+                      const DataColumn(label: Text('القاعة',style: TextStyle(
+            
+            color: Colors.white,
+          ),)),
+                      ...times.map((time) => DataColumn(label: Text(time,style: TextStyle(color: Colors.white,),))),
                     ],
                     rows: halls.map((hall) {
                       return DataRow(cells: [
-                        DataCell(Text(hall)),
+                        DataCell(Text(hall,style: TextStyle(color: Colors.white,))),
                         ...times.map((time) {
                           final entry = data[day]?[time]?[hall];
                           if (entry == null) {
-                            return const DataCell(Text('-'));
+                            return const DataCell(Text('-',style: TextStyle(color: Colors.white,)));
                           }
 
                           final supervisor = entry['supervisor'];
@@ -336,11 +428,11 @@ class _SchedulePageState extends State<SchedulePage> {
                                         ' $supervisor',
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 12),
+                                            fontSize: 12,color: Colors.white,),
                                       ),
                                     ...materials.entries.map((e) => Text(
                                           ' ${e.key}:  ${e.value}',
-                                          style: const TextStyle(fontSize: 12),
+                                          style: const TextStyle(fontSize: 12,color: Colors.white,),
                                         )),
                                   ],
                                 ),
@@ -360,25 +452,26 @@ class _SchedulePageState extends State<SchedulePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(width: 12),
-              ElevatedButton(
-                onPressed: () async {
-                  try {
-                    await senddistribution(data);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('تم حفظ الجدول بنجاح')),
-                    );
+               ElevatedButton(
+       onPressed: () async {
+              try {
+               await senddistribution(scheduleData);
+              ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(content: Text('تم حفظ الجدول بنجاح')),
+              );
                   } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('حدث خطأ أثناء حفظ الجدول: $e')),
-                    );
-                  }
-                },
-                child: const Text('حفظ التغييرات'),
-              ),
+          ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('حدث خطأ أثناء حفظ الجدول: $e')),
+                     );
+             print(e);
+                               }
+                                         },
+                             child: const Text('حفظ التغييرات'),
+                    ),
               const SizedBox(width: 12),
               ElevatedButton(
                 onPressed: () {
-                  context.read<UserCubit>().resetdistribution(context);
+                  context.read<UserCubit>().resetDistribution(context);
                 },
                 child: const Text('تصفير الجدول'),
               ),

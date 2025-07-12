@@ -533,25 +533,51 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  resetdistribution(BuildContext context) async {
+ Future<void> resetDistribution(BuildContext context) async {
+  try {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-    };
+
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('الرمز غير متوفر، يرجى تسجيل الدخول من جديد')),
+      );
+      return;
+    }
+
     var dio = Dio();
     var response = await dio.request(
       'http://localhost:8000/api/resetDistribution',
       options: Options(
         method: 'GET',
-        headers: headers,
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
       ),
     );
 
     if (response.statusCode == 200) {
-      print(json.encode(response.data));
+      final data = response.data;
+
+      if (data['status'] == 'ok') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? 'تمت العملية بنجاح')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? 'حدث خطأ أثناء المعالجة')),
+        );
+      }
     } else {
-      print(response.statusMessage);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('فشل الاتصال بالخادم، رمز الحالة: ${response.statusCode}')),
+      );
     }
+  } catch (e) {
+    print('خطأ أثناء إعادة التوزيع: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('حدث خطأ غير متوقع: $e')),
+    );
   }
+}
 }
