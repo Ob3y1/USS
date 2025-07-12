@@ -69,29 +69,41 @@ class _EditExamTimePageState extends State<EditExamTimePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('تعديل وقت الامتحان')),
+      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      appBar: AppBar(
+        title: const Text(
+          'تعديل وقت الامتحان',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+        iconTheme: const IconThemeData(color: Colors.blue),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextFormField(
+              style: const TextStyle(color: Colors.white),
               controller: _timeController,
-              decoration: const InputDecoration(labelText: 'الوقت'),
+              decoration: const InputDecoration(
+                labelText: 'الوقت',
+                labelStyle: const TextStyle(
+                  color: Colors.lightBlueAccent,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: saveChanges,
-                  child: const Text('حفظ التعديلات'),
-                ),
-                const SizedBox(width: 10),
-                OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('إلغاء'),
-                ),
-              ],
+            ElevatedButton(
+              onPressed: saveChanges,
+              child: const Text(
+                'حفظ التعديلات',
+                style: const TextStyle(color: Colors.lightBlueAccent),
+              ),
             ),
+            const SizedBox(width: 10),
           ],
         ),
       ),

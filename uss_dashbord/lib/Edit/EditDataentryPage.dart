@@ -141,10 +141,16 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
     }
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
       appBar: AppBar(
-        title: const Text('تعديل بيانات المادة'),
+        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+        title: const Text(
+          'تعديل بيانات المادة',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
+        iconTheme: const IconThemeData(color: Colors.blue),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -152,42 +158,71 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
           children: [
             TextField(
               controller: nameController,
+              style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 labelText: 'اسم المادة',
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(
+                  color: Colors.lightBlueAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: studentNumberController,
               keyboardType: TextInputType.number,
+              style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 labelText: 'عدد الطلاب',
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(
+                  color: Colors.lightBlueAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: yearController,
               keyboardType: TextInputType.number,
+              style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 labelText: 'المستوى الدراسي',
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(
+                  color: Colors.lightBlueAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             const Text(
               'التخصصات المرتبطة:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Colors.lightBlueAccent,
+              ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Wrap(
               spacing: 8.0,
+              runSpacing: 4.0,
               children: allSpecialties.map<Widget>((spec) {
                 final id = spec['id'] as int;
                 return FilterChip(
-                  label: Text(spec['name']),
+                  label: Text(
+                    spec['name'],
+                    style: TextStyle(
+                      color: selectedSpecialties.contains(id)
+                          ? Colors.white
+                          : Colors.white70,
+                    ),
+                  ),
                   selected: selectedSpecialties.contains(id),
+                  selectedColor: Colors.lightBlueAccent,
+                  backgroundColor: const Color(0xFF3B4061),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   onSelected: (bool selected) {
                     setState(() {
                       if (selected) {
@@ -200,10 +235,19 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
                 );
               }).toList(),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               onPressed: saveChanges,
-              child: const Text('حفظ التعديلات'),
+              child: const Text('حفظ التعديلات', style: const TextStyle(color: Colors.lightBlueAccent),),
             ),
           ],
         ),

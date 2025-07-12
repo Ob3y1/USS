@@ -1,6 +1,7 @@
 import 'package:exam_dashboard/Widgit/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserManagementScreen extends StatefulWidget {
@@ -73,11 +74,11 @@ class _SupervisorsScreenState extends State<UserManagementScreen> {
         // إعادة تحميل القائمة بعد الحذف
         fetchSupervisors();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('تم حذف المشرف بنجاح')),
+          const SnackBar(content: Text('تم حذف المشرف بنجاح')),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('فشل حذف المشرف')),
+          const SnackBar(content: Text('فشل حذف المشرف')),
         );
       }
     } catch (e) {
@@ -109,7 +110,7 @@ class _SupervisorsScreenState extends State<UserManagementScreen> {
       backgroundColor: const Color.fromARGB(255, 50, 50, 65),
       appBar: AppBar(
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.blue),
+        iconTheme: const IconThemeData(color: Colors.blue),
         title: const Text(
           'ادارة المستخدمين',
           style: TextStyle(color: Colors.white),
@@ -413,8 +414,17 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
       appBar: AppBar(
-        title: Text(widget.supervisor == null ? 'إضافة مشرف' : 'تعديل مشرف'),
+        title: Text(
+          widget.supervisor == null ? 'إضافة مشرف' : 'تعديل مشرف',
+          textAlign: TextAlign.center,
+          style:
+              const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+        iconTheme: const IconThemeData(color: Colors.blue),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -423,16 +433,29 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
           child: Column(
             children: [
               TextFormField(
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.lightBlueAccent,
+                ),
                 controller: nameController,
-                decoration: const InputDecoration(labelText: 'الاسم'),
+                decoration: const InputDecoration(
+                  labelText: 'الاسم',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
                 validator: (value) => value == null || value.isEmpty
                     ? 'الرجاء إدخال الاسم'
                     : null,
               ),
               TextFormField(
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.lightBlueAccent,
+                ),
                 controller: emailController,
-                decoration:
-                    const InputDecoration(labelText: 'البريد الإلكتروني'),
+                decoration: const InputDecoration(
+                  labelText: 'البريد الإلكتروني',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty)
                     return 'الرجاء إدخال البريد الإلكتروني';
@@ -442,12 +465,16 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
               ),
               TextFormField(
                 controller: passwordController,
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: widget.supervisor == null
                       ? 'كلمة المرور'
                       : 'كلمة المرور (اختياري)',
+                  labelStyle: const TextStyle(color: Colors.white),
+                  counterStyle: const TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
                 ),
-                obscureText: true,
                 validator: (value) {
                   if (widget.supervisor == null) {
                     if (value == null || value.isEmpty)
@@ -457,8 +484,15 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
                 },
               ),
               DropdownButtonFormField<String>(
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.lightBlueAccent,
+                ),
                 value: status,
-                decoration: const InputDecoration(labelText: 'الحالة'),
+                decoration: const InputDecoration(
+                  labelText: 'الحالة',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
                 items: const [
                   DropdownMenuItem(value: 'active', child: Text('نشط')),
                   DropdownMenuItem(value: 'inactive', child: Text('غير نشط')),
@@ -468,11 +502,20 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
                 },
               ),
               const SizedBox(height: 24),
-              Text('أيام الدوام:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const Text(
+                'أيام الدوام:',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.lightBlueAccent,
+                ),
+              ),
               ...allDays.map((day) {
                 return CheckboxListTile(
-                  title: Text(day['day']),
+                  title: Text(
+                    day['day'],
+                    style: const TextStyle(color: Colors.white),
+                  ),
                   value: selectedDayIds.contains(day['id']),
                   onChanged: (bool? checked) {
                     setState(() {
@@ -483,12 +526,18 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
                       }
                     });
                   },
+                  controlAffinity: ListTileControlAffinity.leading,
+                  activeColor: Colors.lightBlueAccent,
                 );
               }).toList(),
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: submit,
-                child: Text(widget.supervisor == null ? 'إضافة' : 'تحديث'),
+                child: Text(
+                  widget.supervisor == null ? 'إضافة' : 'تحديث',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.blue),
+                ),
               ),
             ],
           ),

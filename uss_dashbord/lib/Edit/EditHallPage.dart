@@ -170,7 +170,17 @@ class _EditHallPageState extends State<EditHallPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('تعديل القاعة')),
+      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      appBar: AppBar(
+        title: const Text(
+          'تعديل القاعة',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        iconTheme: const IconThemeData(color: Colors.blue),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
@@ -178,13 +188,27 @@ class _EditHallPageState extends State<EditHallPage> {
               child: ListView(
                 children: [
                   TextField(
+                    style: const TextStyle(color: Colors.white),
                     controller: locationController,
-                    decoration: const InputDecoration(labelText: 'مكان القاعة'),
+                    decoration: const InputDecoration(
+                      labelText: 'مكان القاعة',
+                      labelStyle: const TextStyle(
+                        color: Colors.lightBlueAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 16),
                   TextField(
+                    style: const TextStyle(color: Colors.white),
                     controller: chairNumberController,
-                    decoration: const InputDecoration(labelText: 'عدد الكراسي'),
+                    decoration: const InputDecoration(
+                      labelText: 'عدد الكراسي',
+                      labelStyle: const TextStyle(
+                        color: Colors.lightBlueAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 16),
@@ -194,7 +218,9 @@ class _EditHallPageState extends State<EditHallPage> {
                       const Text(
                         'عناوين الكاميرات:',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.lightBlueAccent),
                       ),
                       ElevatedButton.icon(
                         onPressed: addCameraField,
@@ -213,9 +239,14 @@ class _EditHallPageState extends State<EditHallPage> {
                         children: [
                           Expanded(
                             child: TextField(
+                              style: const TextStyle(color: Colors.white),
                               controller: ctrl,
                               decoration: InputDecoration(
                                 labelText: 'عنوان كاميرا ${idx + 1}',
+                                labelStyle: const TextStyle(
+                                  color: Colors.lightBlueAccent,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -230,7 +261,10 @@ class _EditHallPageState extends State<EditHallPage> {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: saveHallData,
-                    child: const Text('حفظ التعديلات'),
+                    child: const Text(
+                      'حفظ التعديلات',
+                      style: const TextStyle(color: Colors.lightBlueAccent),
+                    ),
                   ),
                 ],
               ),

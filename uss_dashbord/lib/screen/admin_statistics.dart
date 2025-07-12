@@ -55,7 +55,6 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
 
   Widget buildCard(String title, Widget child) {
     return Container(
-      margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: const Color(0xFF2A2E43),
         borderRadius: BorderRadius.circular(16),
@@ -68,19 +67,22 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
         ],
       ),
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.lightBlueAccent,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.lightBlueAccent,
+              ),
             ),
-          ),
-          child,
-        ],
+            const SizedBox(height: 8),
+            child, // لا تستخدم Expanded هنا، فقط مرر الـ Widget كما هو
+          ],
+        ),
       ),
     );
   }
@@ -90,7 +92,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "المستخدمون",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("الإجمالي: ${users['total']}", style: _cardTextStyle()),
           Text("نشطون: ${users['active']}", style: _cardTextStyle()),
@@ -106,7 +108,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "المواد",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("عدد المواد: ${subjects['total']}", style: _cardTextStyle()),
           Text("عدد الطلاب الكلي: ${subjects['total_students']}",
@@ -121,7 +123,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "القاعات",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("عدد القاعات: ${halls['total']}", style: _cardTextStyle()),
           Text("عدد الكراسي الكلي: ${halls['total_chairs']}",
@@ -136,7 +138,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "الكاميرات",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("عدد الكاميرات: ${camera['total']}", style: _cardTextStyle()),
         ],
@@ -149,7 +151,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "ايام الامتحانات",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("عدد الامتحانات: ${exam_days['total']}",
               style: _cardTextStyle()),
@@ -163,7 +165,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "اوقات الامتحانات",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("اوقات الامتحانات: ${exam_times['total']}",
               style: _cardTextStyle()),
@@ -177,7 +179,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "الجداول",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("الجداول: ${schedules['total']}", style: _cardTextStyle()),
         ],
@@ -190,7 +192,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "مجموع الاختصاصات",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("مجموع الاختصاصات: ${specialties['total']}",
               style: _cardTextStyle()),
@@ -204,7 +206,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "التوزيع",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("مجموع التوزيع: ${distributions['total']}",
               style: _cardTextStyle()),
@@ -221,7 +223,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "ايام العمل ",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("ايام العمل : ${working_days['total']}",
               style: _cardTextStyle()),
@@ -236,7 +238,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "حالات الغش المكتشفة",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("الإجمالي: ${cheating['total']}", style: _cardTextStyle()),
           const SizedBox(height: 8),
@@ -254,7 +256,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "أكثر القاعات حدوثاً لحالات الغش",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: halls
             .map((h) => Text("${h['location']}: ${h['cheating_count']} حالة",
                 style: _cardTextStyle()))
@@ -268,7 +270,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "المراقبون الأكثر تسجيلًا لحالات الغش",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: observers
             .map((o) => Text("${o['name']}: ${o['cheating_reports']} تقرير غش",
                 style: _cardTextStyle()))
@@ -282,7 +284,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "المراقبون الأقل في تسجيل الغش مع عدد الإشرافات",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: observers
             .map((o) => Text(
                 "${o['name']}: ${o['cheating_reports']} تقرير غش، عدد الإشرافات: ${o['total_supervisions']}",
@@ -297,7 +299,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "أيام الغش الأكثر تكرارًا",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: days
             .map((d) => Text(
                 "${d['day']} (${d['date']}): ${d['cheating_count']} حالة",
@@ -312,7 +314,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     return buildCard(
       "أوقات الغش الأكثر تكرارًا",
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: times
             .map((t) => Text("${t['time']}: ${t['cheating_count']} حالة",
                 style: _cardTextStyle()))
@@ -357,9 +359,11 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 50, 50, 65),
-        title: const Text('الإحصائيات',
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.white)),
+        title: const Text(
+          'الإحصائيات',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         iconTheme: const IconThemeData(color: Colors.blue),
       ),
       body: isLoading
@@ -372,22 +376,33 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
                     textAlign: TextAlign.center,
                   ),
                 )
-              : Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3, // 2 cards per row
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
-                      childAspectRatio: 0.9,
-                    ),
-                    itemCount: cards.length,
-                    itemBuilder: (context, index) {
-                      return cards[index];
-                    },
-                  ),
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints:
+                            BoxConstraints(minHeight: constraints.maxHeight),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GridView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8,
+                              childAspectRatio: 1.1,
+                            ),
+                            itemCount: cards.length,
+                            itemBuilder: (context, index) {
+                              return cards[index];
+                            },
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
     );
   }

@@ -50,9 +50,6 @@ class _SchedulePageState extends State<SchedulePage> {
   Map<String, Map<String, Map<String, Map<String, dynamic>>>>? scheduleData;
   bool isLoading = false;
   String? errorMessage;
-  List<dynamic> assignmentsList = [];
-  Map<String, dynamic> tasksData = {};
-  bool isSaving = false;
   @override
   void initState() {
     super.initState();
@@ -124,238 +121,124 @@ class _SchedulePageState extends State<SchedulePage> {
     }
   }
 
- // 1. أولاً: أضف هذه الدالة في كلاس _SchedulePageState
-Future<void> sendDistribution(
-    Map<String, Map<String, Map<String, Map<String, dynamic>>>> data) async {
-  try {
-    // يمكنك هنا إرسال البيانات إلى مكان آخر أو حفظها
-    print('تم إرسال توزيع الجدول بنجاح');
-    print('عدد الأيام في الجدول: ${data.length}');
-  } catch (e) {
-    print('حدث خطأ أثناء إرسال التوزيع: $e');
-  }
-}
+  Future<void> fetchData() async {
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
 
-// 2. ثانياً: تعديل دالة fetchData
-Future<void> fetchData() async {
-  setState(() {
-    isLoading = true;
-    errorMessage = null;
-  });
+    try {
+      final url = Uri.parse('http://localhost:8002/generate-full-schedule');
+      final response = await http.get(url);
 
-  try {
-    final url = Uri.parse('http://localhost:8002/generate-full-schedule');
-    final response = await http.get(url);
+      if (response.statusCode != 200) {
+        print(response.bodyBytes);
+        print('Status Code: ${response.statusCode}');
+        print('Response Body: ${utf8.decode(response.bodyBytes)}');
 
-    if (response.statusCode != 200) {
-      throw Exception('فشل في جلب البيانات: ${response.statusCode}');
-    }
+        throw Exception('فشل في جلب البيانات من السيرفر');
+      }
+      final decoded = utf8.decode(response.bodyBytes);
+      print(decoded); // قبل jsonDecode
 
-    final decoded = utf8.decode(response.bodyBytes);
-    final data = jsonDecode(decoded) as Map<String, dynamic>;
+      final data = jsonDecode(decoded);
+      final schedule = data['schedule_distribution'] as Map<String, dynamic>;
+      final assignmentsList = data['supervision_assignment'] as List;
 
-    // تحقق من وجود الحقول الأساسية
-    if (!data.containsKey('schedule_distribution') || 
-        !data.containsKey('supervision_assignment')) {
-      throw Exception('بيانات غير مكتملة من السيرفر');
-    }
+      final assignments = assignmentsList
+          .map((e) => SupervisionAssignment.fromJson(e))
+          .toList();
 
-    final schedule = data['schedule_distribution'] as Map<String, dynamic>;
-    final assignmentsList = data['supervision_assignment'] as List;
+      final result = <String, Map<String, Map<String, Map<String, dynamic>>>>{};
 
-    final assignments = assignmentsList
-        .map((e) => SupervisionAssignment.fromJson(e))
-        .toList();
-
-    final result = <String, Map<String, Map<String, Map<String, dynamic>>>>{};
-
-    // معالجة تكليفات المراقبين
-    for (final a in assignments) {
-      final fullDayKey = '${a.day} (${a.date})';
-      result.putIfAbsent(fullDayKey, () => {});
-      result[fullDayKey]!.putIfAbsent(a.time, () => {});
-      result[fullDayKey]![a.time]!.putIfAbsent(
-        a.hall,
-        () => {
-          'supervisor': a.supervisor,
-          'courses': a.courses,
-          'total_students': a.totalStudents,
-          'materials': <String, int>{},
-        },
-      );
-    }
-
-    // معالجة توزيع الجدول
-    schedule.forEach((datetimeKey, courseMap) {
-      final regex = RegExp(
-        r'(\d{4}-\d{2}-\d{2}) (\w+)(?: at)? (\d{1,2}(?:AM|PM))',
-        caseSensitive: false,
-      );
-      final match = regex.firstMatch(datetimeKey);
-
-      if (match == null) {
-        print('تنسيق التاريخ غير صحيح: $datetimeKey');
-        return;
+      for (var a in assignments) {
+        final fullDayKey = '${a.day} (${a.date})';
+        result.putIfAbsent(fullDayKey, () => {});
+        result[fullDayKey]!.putIfAbsent(a.time, () => {});
+        result[fullDayKey]![a.time]!.putIfAbsent(
+            a.hall,
+            () => {
+                  'supervisor': a.supervisor,
+                  'materials': <String, int>{},
+                });
+        // إذا كانت القاعة موجودة، لكن لم يكن هناك مراقب، نضيفه الآن
+        result[fullDayKey]![a.time]![a.hall]!['supervisor'] = a.supervisor;
       }
 
-      final date = match.group(1)!;
-      final day = match.group(2)!;
-      final time = match.group(3)!;
-      final fullDayKey = '$day ($date)';
+      schedule.forEach((datetimeKey, courseMap) {
+        // أمثلة محتملة: "2025-06-27 Friday at 8AM" أو "2025-06-27 Friday 8AM"
+        final regex =
+            RegExp(r'(\d{4}-\d{2}-\d{2}) (\w+)(?: at)? (\d{1,2}(?:AM|PM))');
+        final match = regex.firstMatch(datetimeKey);
 
-      (courseMap as Map<String, dynamic>).forEach((course, hallsData) {
-        (hallsData as Map<String, dynamic>).forEach((hall, studentCount) {
-          result.putIfAbsent(fullDayKey, () => {});
-          result[fullDayKey]!.putIfAbsent(time, () => {});
-          result[fullDayKey]![time]!.putIfAbsent(
-            hall,
-            () => {
-              'supervisor': null,
-              'courses': [],
-              'total_students': 0,
-              'materials': <String, int>{},
-            },
-          );
+        if (match == null) return;
 
-          result[fullDayKey]![time]![hall]!['materials'][course] = 
-              (studentCount as num).toInt();
+        final date = match.group(1)!;
+        final day = match.group(2)!;
+        final time = match.group(3)!;
+        final fullDayKey = '$day ($date)';
+
+        courseMap.forEach((course, hallsData) {
+          (hallsData as Map<String, dynamic>).forEach((hall, studentCount) {
+            result.putIfAbsent(fullDayKey, () => {});
+            result[fullDayKey]!.putIfAbsent(time, () => {});
+            result[fullDayKey]![time]!.putIfAbsent(
+                hall,
+                () => {
+                      'supervisor': null,
+                      'materials': <String, int>{},
+                    });
+
+            final mat = result[fullDayKey]![time]![hall]!['materials']
+                as Map<String, int>;
+            mat[course] = studentCount;
+          });
         });
       });
-    });
+      // ignore: avoid_print
+      print(jsonEncode(result));
 
-    setState(() {
-      scheduleData = result;
-      isLoading = false;
-    });
-
-   
-  } catch (e, stackTrace) {
-    final errorMsg = 'حدث خطأ: ${e.toString()}';
-    print('Error Details: $errorMsg');
-    print('Stack Trace: $stackTrace');
-    
-    setState(() {
-      errorMessage = errorMsg;
-      isLoading = false;
-    });
-    
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMsg)),
-      );
+      setState(() {
+        scheduleData = result;
+        isLoading = false;
+      });
+      await senddistribution(result);
+    } catch (e) {
+      print(e);
+      setState(() {
+        errorMessage = e.toString();
+        isLoading = false;
+      });
     }
   }
-}
-void _validateFullData(Map<String, dynamic> data) {
-  // التحقق من الجدول الزمني
-  if (data['schedule_distribution'] == null || 
-      data['schedule_distribution'].isEmpty) {
-    throw Exception('بيانات الجدول الزمني غير صالحة');
-  }
 
-  // التحقق من تكليفات المراقبين
-  if (data['supervision_assignment'] == null || 
-      data['supervision_assignment'].isEmpty) {
-    throw Exception('بيانات تكليفات المراقبين غير صالحة');
-  }
-
-  // التحقق من مهام المراقبة
-  if (data['supervision_tasks'] == null || 
-      data['supervision_tasks'].isEmpty) {
-    throw Exception('بيانات مهام المراقبة غير صالحة');
-  }
-}
-Future<void> senddistribution(Map<String, Object?> fullData) async {
-  try {
-    // التحقق من وجود البيانات الأساسية
-    if (scheduleData!.isEmpty || assignmentsList.isEmpty || tasksData.isEmpty) {
-      throw Exception('بيانات غير مكتملة');
-    }
-
-    setState(() => isSaving = true);
-
-    // تحضير هيكل البيانات النهائي
-    final requestData = {
-      'status': 'ok',
-      'schedule_distribution': scheduleData,
-      'supervision_assignment': assignmentsList,
-      'supervision_tasks': tasksData,
-      'metadata': {
-        'generated_at': DateTime.now().toIso8601String(),
-        'app_version': '1.0.0',
-      },
+  Future<void> senddistribution(dynamic data) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json'
     };
 
-    // التحقق من صحة البيانات
-    _validateFullData(requestData);
-
-    // الحصول على token
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token') ?? '';
-    if (token.isEmpty) throw Exception('لم يتم العثور على token');
-
-    // إعداد وإرسال الطلب
-    final dio = Dio(BaseOptions(
-      baseUrl: 'http://10.0.2.2:8000',
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    ));
-
-    final response = await dio.post(
-      '/api/distribution',
-      data: jsonEncode(requestData),
+    json.encode(data);
+    var dio = Dio();
+    var response = await dio.request(
+      'http://localhost:8000/api/distribution',
+      options: Options(
+        method: 'POST',
+        headers: headers,
+      ),
+      data: data,
     );
 
-    if (response.statusCode != 201) {
-      throw Exception('فشل في الحفظ: ${response.statusCode}');
+    if (response.statusCode == 201) {
+      print(json.encode(response.data));
+    } else {
+      print(response.statusMessage);
+      print(response);
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('تم الحفظ بنجاح')),
-    );
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('حدث خطأ: ${e.toString()}')),
-    );
-    rethrow;
-  } finally {
-    if (mounted) setState(() => isSaving = false);
-  }
-}
-void _validateScheduleData(Map<String, dynamic> data) {
-  // 1. التحقق من أن البيانات ليست فارغة
-  if (data.isEmpty) {
-    throw Exception('بيانات الجدول فارغة');
   }
 
-  // 2. التحقق من كل يوم في الجدول
-  data.forEach((dayKey, dayData) {
-    if (dayData == null || dayData is! Map) {
-      throw Exception('تنسيق غير صحيح لليوم $dayKey');
-    }
-
-    // 3. التحقق من كل فترة زمنية
-    dayData.forEach((timeSlot, hallData) {
-      if (hallData == null || hallData is! Map) {
-        throw Exception('تنسيق غير صحيح للفترة $timeSlot في اليوم $dayKey');
-      }
-
-      // 4. التحقق من بيانات كل قاعة
-      hallData.forEach((hall, details) {
-        if (details == null || details is! Map) {
-          throw Exception('تنسيق غير صحيح للقاعة $hall في الفترة $timeSlot');
-        }
-
-        // 5. التحقق من وجود المشرف والمواد
-        if (details['supervisor'] == null || details['materials'] == null) {
-          throw Exception('بيانات ناقصة للقاعة $hall');
-        }
-      });
-    });
-  });
-}
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -477,21 +360,21 @@ void _validateScheduleData(Map<String, dynamic> data) {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(width: 12),
-ElevatedButton(
-  onPressed: () async {
-    if (scheduleData!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('لا يوجد بيانات لحفظها')),
-      );
-      return;
-    }
-    
-    await senddistribution(data);
-  },
-  child: isSaving
-      ? const CircularProgressIndicator()
-      : const Text('حفظ التغييرات'),
-),
+              ElevatedButton(
+                onPressed: () async {
+                  try {
+                    await senddistribution(data);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('تم حفظ الجدول بنجاح')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('حدث خطأ أثناء حفظ الجدول: $e')),
+                    );
+                  }
+                },
+                child: const Text('حفظ التغييرات'),
+              ),
               const SizedBox(width: 12),
               ElevatedButton(
                 onPressed: () {

@@ -4,9 +4,13 @@ import 'package:exam_dashboard/cubit/user_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:pdf/pdf.dart';
 import 'dart:convert';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:printing/printing.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class FullSchedulePage extends StatefulWidget {
   @override
@@ -28,6 +32,78 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
     } else {
       return {'day': 'غير معروف', 'date': 'غير معروف'};
     }
+  }
+
+  Future<pw.Document> buildPdf(Map<String, Map<String, dynamic>> organizedData,
+      List<String> slotLabels) async {
+    final pdf = pw.Document();
+
+    // تحميل الخط العربي
+    final arabicFont =
+        await rootBundle.load("assets/fonts/static/Cairo-Regular.ttf");
+    final ttf = pw.Font.ttf(arabicFont);
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        build: (context) {
+          return [
+            pw.Center(
+              child: pw.Text(
+                'الجدول الامتحاني',
+                textDirection: pw.TextDirection.rtl,
+                textAlign: pw.TextAlign.right,
+                style: pw.TextStyle(
+                  font: ttf,
+                  fontSize: 18,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+            ),
+            pw.SizedBox(height: 20),
+            pw.Table.fromTextArray(
+              headers: ['اليوم', 'التاريخ', ...slotLabels],
+              data: organizedData.entries.map((entry) {
+                final value = entry.value;
+                final day = value['day'];
+                final date = value['date'];
+                final slots = value['slots'] as Map<String, List<String>>;
+
+                return [
+                  day,
+                  date,
+                  ...slotLabels.map((slot) {
+                    final subjects = slots[slot] ?? [];
+                    if (subjects.isEmpty) return '-';
+                    return subjects.join('\n');
+                  }).toList(),
+                ];
+              }).toList(),
+              border: pw.TableBorder.all(),
+              cellAlignment: pw.Alignment.centerRight,
+              headerStyle: pw.TextStyle(
+                font: ttf,
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColors.white,
+              ),
+              headerDecoration: pw.BoxDecoration(color: PdfColors.grey800),
+              cellStyle: pw.TextStyle(
+                font: ttf,
+                fontSize: 10,
+              ),
+              headerHeight: 25,
+              cellHeight: 30,
+              cellAlignments: {
+                for (var i = 0; i < slotLabels.length + 2; i++)
+                  i: pw.Alignment.centerRight
+              },
+            ),
+          ];
+        },
+      ),
+    );
+
+    return pdf;
   }
 
   Future<void> generateSchedule() async {
@@ -351,6 +427,62 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                   context.read<UserCubit>().resetSchedules(context);
                 },
                 child: const Text('تصفير الجدول'),
+              ),
+              const SizedBox(width: 12),
+              ElevatedButton(
+                onPressed: () async {
+                  final organizedData = <String, Map<String, dynamic>>{};
+                  for (var item in schedule) {
+                    final day = item['day'].toString();
+                    final date = item['date'].toString();
+                    final dayKey = '$day|$date';
+                    final slot = item['slot']?.toString() ??
+                        item['time']?.toString() ??
+                        'غير محدد';
+                    final subject = item['subject'].toString();
+
+                    organizedData.putIfAbsent(
+                      dayKey,
+                      () => {
+                        'day': day,
+                        'date': date,
+                        'slots': <String, List<String>>{},
+                      },
+                    );
+
+                    Map<String, List<String>> slots =
+                        organizedData[dayKey]!['slots'];
+                    slots.putIfAbsent(slot, () => []);
+                    slots[slot]!.add(subject);
+                  }
+
+                  final slotLabels = schedule
+                      .map((item) =>
+                          item['slot']?.toString() ??
+                          item['time']?.toString() ??
+                          'غير محدد')
+                      .toSet()
+                      .toList()
+                    ..sort((a, b) {
+                      try {
+                        final timeA = TimeOfDay(
+                            hour: int.parse(a.split(':')[0]),
+                            minute: int.parse(a.split(':')[1]));
+                        final timeB = TimeOfDay(
+                            hour: int.parse(b.split(':')[0]),
+                            minute: int.parse(b.split(':')[1]));
+                        return timeA.hour.compareTo(timeB.hour) != 0
+                            ? timeA.hour.compareTo(timeB.hour)
+                            : timeA.minute.compareTo(timeB.minute);
+                      } catch (e) {
+                        return a.compareTo(b);
+                      }
+                    });
+
+                  final pdfDoc = await buildPdf(organizedData, slotLabels);
+                  await Printing.layoutPdf(onLayout: (format) => pdfDoc.save());
+                },
+                child: const Text('طباعة الجدول'),
               ),
             ],
           ),

@@ -96,23 +96,43 @@ class _EditExamDayPageState extends State<EditExamDayPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('تعديل يوم الامتحان')),
+      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      appBar: AppBar(
+        title: const Text(
+          'تعديل يوم الامتحان',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+        iconTheme: const IconThemeData(color: Colors.blue),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
+              style: const TextStyle(color: Colors.white),
               controller: dayController,
               decoration: const InputDecoration(
                 labelText: 'اليوم',
+                labelStyle: const TextStyle(
+                  color: Colors.lightBlueAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 16),
             TextField(
+              style: const TextStyle(color: Colors.white),
               controller: dateController,
               decoration: const InputDecoration(
                 labelText: 'التاريخ',
                 hintText: 'YYYY/MM/DD',
+                labelStyle: const TextStyle(
+                  color: Colors.lightBlueAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -120,15 +140,10 @@ class _EditExamDayPageState extends State<EditExamDayPage> {
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
                     onPressed: saveChanges,
-                    child: const Text('حفظ التعديلات'),
+                    child: const Text('حفظ التعديلات', style: const TextStyle(color: Colors.lightBlueAccent),),
                   ),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('رجوع'),
-            ),
+            
           ],
         ),
       ),
