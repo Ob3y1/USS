@@ -22,9 +22,9 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
   List<dynamic> examDays = [];
   final pdf = pw.Document();
   bool isDragEnabled = false; // تفعيل السحب فقط بعد "توليد الجدول"
-String? draggedSubject;
-String? fromDayKey;
-String? fromSlot;
+  String? draggedSubject;
+  String? fromDayKey;
+  String? fromSlot;
 
   Map<String, String> getDayAndDate(int dayId) {
     final dayData =
@@ -66,43 +66,76 @@ String? fromSlot;
               ),
             ),
             pw.SizedBox(height: 20),
-            pw.Table.fromTextArray(
-              headers: ['اليوم', 'التاريخ', ...slotLabels],
-              data: organizedData.entries.map((entry) {
-                final value = entry.value;
-                final day = value['day'];
-                final date = value['date'];
-                final slots = value['slots'] as Map<String, List<String>>;
-
-                return [
-                  day,
-                  date,
-                  ...slotLabels.map((slot) {
-                    final subjects = slots[slot] ?? [];
-                    if (subjects.isEmpty) return '-';
-                    return subjects.join('\n');
-                  }).toList(),
-                ];
-              }).toList(),
+            pw.Table(
               border: pw.TableBorder.all(),
-              cellAlignment: pw.Alignment.centerRight,
-              headerStyle: pw.TextStyle(
-                font: ttf,
-                fontWeight: pw.FontWeight.bold,
-                color: PdfColors.white,
-              ),
-              headerDecoration: const pw.BoxDecoration(color: PdfColors.grey800),
-              cellStyle: pw.TextStyle(
-                font: ttf,
-                fontSize: 10,
-              ),
-              headerHeight: 25,
-              cellHeight: 30,
-              cellAlignments: {
-                for (var i = 0; i < slotLabels.length + 2; i++)
-                  i: pw.Alignment.centerRight
-              },
-            ),
+              children: [
+                // Header row
+                pw.TableRow(
+                  decoration: const pw.BoxDecoration(color: PdfColors.grey800),
+                  children: [
+                    ...['اليوم', 'التاريخ', ...slotLabels].map(
+                      (text) => pw.Container(
+                        alignment: pw.Alignment.centerRight,
+                        padding: const pw.EdgeInsets.all(4),
+                        child: pw.Text(
+                          text,
+                          style: pw.TextStyle(
+                            font: ttf,
+                            fontWeight: pw.FontWeight.bold,
+                            color: PdfColors.white,
+                          ),
+                          textDirection: pw.TextDirection.rtl,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // Data rows
+                ...organizedData.entries.map((entry) {
+                  final value = entry.value;
+                  final day = value['day'];
+                  final date = value['date'];
+                  final slots = value['slots'] as Map<String, List<String>>;
+
+                  return pw.TableRow(
+                    children: [
+                      pw.Container(
+                        alignment: pw.Alignment.centerRight,
+                        padding: const pw.EdgeInsets.all(4),
+                        child: pw.Text(
+                          day,
+                          style: pw.TextStyle(font: ttf, fontSize: 10),
+                          textDirection: pw.TextDirection.rtl,
+                        ),
+                      ),
+                      pw.Container(
+                        alignment: pw.Alignment.centerRight,
+                        padding: const pw.EdgeInsets.all(4),
+                        child: pw.Text(
+                          date,
+                          style: pw.TextStyle(font: ttf, fontSize: 10),
+                          textDirection: pw.TextDirection.rtl,
+                        ),
+                      ),
+                      ...slotLabels.map((slot) {
+                        final subjects = slots[slot] ?? [];
+                        final text =
+                            subjects.isEmpty ? '-' : subjects.join('\n');
+                        return pw.Container(
+                          alignment: pw.Alignment.centerRight,
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text(
+                            text,
+                            style: pw.TextStyle(font: ttf, fontSize: 10),
+                            textDirection: pw.TextDirection.rtl,
+                          ),
+                        );
+                      }),
+                    ],
+                  );
+                }).toList(),
+              ],
+            )
           ];
         },
       ),
@@ -159,7 +192,6 @@ String? fromSlot;
     print("Data to send: ${json.encode(data)}");
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-     
       print(response);
     } else {
       print("فشل في حفظ الجدول: ${response.statusMessage}");
@@ -353,210 +385,224 @@ String? fromSlot;
                         ),
                         ...slotLabels.map((slot) {
                           final subjects = slots[slot] ?? [];
-                        return DragTarget<String>(
-  onWillAccept: (_) => isDragEnabled,
-  onAccept: (subject) {
-    if (!isDragEnabled || draggedSubject == null) return;
+                          return DragTarget<String>(
+                            onWillAccept: (_) => isDragEnabled,
+                            onAccept: (subject) {
+                              if (!isDragEnabled || draggedSubject == null)
+                                return;
 
-    // احذف من الموقع القديم
-    setState(() {
-      if (fromDayKey != null && fromSlot != null) {
-        organizedData[fromDayKey]!['slots'][fromSlot!]!.remove(subject);
-      }
+                              // احذف من الموقع القديم
+                              setState(() {
+                                if (fromDayKey != null && fromSlot != null) {
+                                  organizedData[fromDayKey]!['slots']
+                                          [fromSlot!]!
+                                      .remove(subject);
+                                }
 
-      // أضف للموقع الجديد
-      slots.putIfAbsent(slot, () => []);
-      slots[slot]!.add(subject);
+                                // أضف للموقع الجديد
+                                slots.putIfAbsent(slot, () => []);
+                                slots[slot]!.add(subject);
 
-      // عدل أيضا في schedule
-      final index = schedule.indexWhere((item) =>
-          item['subject'] == subject &&
-          item['day'] == fromDayKey!.split('|')[0] &&
-          item['date'] == fromDayKey!.split('|')[1] &&
-          (item['slot'] == fromSlot || item['time'] == fromSlot));
-      if (index != -1) {
-        schedule[index]['day'] = day;
-        schedule[index]['date'] = date;
-        schedule[index]['slot'] = slot;
-      }
-    });
-  },
-  builder: (context, candidateData, rejectedData) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: subjects.isNotEmpty
-            ? subjects.map((subject) {
-                return isDragEnabled
-                    ? Draggable<String>(
-                        data: subject,
-                        feedback: Material(
-                          color: Colors.transparent,
-                          child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(subject,
-                                style: const TextStyle(color: Colors.white)),
-                          ),
-                        ),
-                        childWhenDragging: Opacity(
-                          opacity: 0.3,
-                          child: Text(subject,
-                              style: const TextStyle(color: Colors.white)),
-                        ),
-                        onDragStarted: () {
-                          draggedSubject = subject;
-                          fromDayKey = entry.key;
-                          fromSlot = slot;
-                        },
-                        onDraggableCanceled: (_, __) {
-                          draggedSubject = null;
-                          fromDayKey = null;
-                          fromSlot = null;
-                        },
-                        onDragEnd: (_) {
-                          draggedSubject = null;
-                          fromDayKey = null;
-                          fromSlot = null;
-                        },
-                        child: Text(subject,
-                            style:
-                                const TextStyle(color: Colors.white)),
-                      )
-                    : Text(subject,
-                        style: const TextStyle(color: Colors.white));
-              }).toList()
-            : [
-                const Text('-',
-                    style: TextStyle(fontSize: 13, color: Colors.white))
-              ],
-      ),
-    );
-  },
-);
-
-                                                 }).toList(),
-                                                ],
-                                              );
-                                            }).toList(),
-                                             ],
-                                             ),
-                                           ),
-                                          ),
-                                                          const SizedBox(height: 16),
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: [
-                                                            ElevatedButton(
-                                                  onPressed: () {
-                                                    generateSchedule(); // إذا كانت موجودة
-                                                    setState(() {
-                                                      isDragEnabled = true;
-                                                    });
+                                // عدل أيضا في schedule
+                                final index = schedule.indexWhere((item) =>
+                                    item['subject'] == subject &&
+                                    item['day'] == fromDayKey!.split('|')[0] &&
+                                    item['date'] == fromDayKey!.split('|')[1] &&
+                                    (item['slot'] == fromSlot ||
+                                        item['time'] == fromSlot));
+                                if (index != -1) {
+                                  schedule[index]['day'] = day;
+                                  schedule[index]['date'] = date;
+                                  schedule[index]['slot'] = slot;
+                                }
+                              });
+                            },
+                            builder: (context, candidateData, rejectedData) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: subjects.isNotEmpty
+                                      ? subjects.map((subject) {
+                                          return isDragEnabled
+                                              ? Draggable<String>(
+                                                  data: subject,
+                                                  feedback: Material(
+                                                    color: Colors.transparent,
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              6),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.blue,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                      ),
+                                                      child: Text(subject,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .white)),
+                                                    ),
+                                                  ),
+                                                  childWhenDragging: Opacity(
+                                                    opacity: 0.3,
+                                                    child: Text(subject,
+                                                        style: const TextStyle(
+                                                            color:
+                                                                Colors.white)),
+                                                  ),
+                                                  onDragStarted: () {
+                                                    draggedSubject = subject;
+                                                    fromDayKey = entry.key;
+                                                    fromSlot = slot;
                                                   },
-                                                  child: const Text('توليد الجدول'),
-                                                ),
-
-                                                      const SizedBox(width: 12),
-                                                      ElevatedButton(
-                                                       onPressed: () async {
-                                                           try {
-                                                                    final transformed = schedule.map((item) {
-                                                                      // نبحث عن اليوم المطابق في examDays
-                                                                      final matchedDay = examDays.firstWhere(
-                                                                        (day) =>
-                                                                            day['day'] == item['day'] &&
-                                                                            day['date'] == item['date'],
-                                                                        orElse: () => null,
-                                                                      );
-
-                                                                      return {
-                                                                        'subject': item['subject'],
-                                                                        'level': item['level'],
-                                                                        'day': matchedDay != null
-                                                                            ? matchedDay['id']
-                                                                            : 0, // نحصل على id اليوم
-                                                                        'slot': item['slot'],
-                                                                      };
-                                                                    }).toList();
-
-                                                                    await sendSchedules(transformed);
-                                                                 } catch (e) {
-                                                                    print("خطأ أثناء التحويل أو الإرسال: $e");
-                                                                     }
-                                                                },
-                                                                child: const Text('حفظ الجدول'),
-                                                              ),
-                                                              const SizedBox(width: 12),
-                                                              ElevatedButton(
-                                                                onPressed: () {
-                                                                  context.read<UserCubit>().resetSchedules(context);
-                                                                },
-                                                                child: const Text('تصفير الجدول'),
-                                                              ),
-                                                              const SizedBox(width: 12),
-                                                              ElevatedButton(
-                                                                onPressed: () async {
-                                                                  final organizedData = <String, Map<String, dynamic>>{};
-                                                                  for (var item in schedule) {
-                                                                    final day = item['day'].toString();
-                                                                    final date = item['date'].toString();
-                                                                    final dayKey = '$day|$date';
-                                                                    final slot = item['slot']?.toString() ??
-                                                                        item['time']?.toString() ??
-                                                                        'غير محدد';
-                                                                    final subject = item['subject'].toString();
-
-                                                                    organizedData.putIfAbsent(
-                                                                      dayKey,
-                                                                      () => {
-                                                                        'day': day,
-                                                                        'date': date,
-                                                                        'slots': <String, List<String>>{},
-                                                                      },
-                                                                    );
-
-                                                                    Map<String, List<String>> slots =
-                                                                        organizedData[dayKey]!['slots'];
-                                                                    slots.putIfAbsent(slot, () => []);
-                                                                    slots[slot]!.add(subject);
-                                                                  }
-
-                                                                  final slotLabels = schedule
-                                                                      .map((item) =>
-                                                                          item['slot']?.toString() ??
-                                                                          item['time']?.toString() ??
-                                                                          'غير محدد')
-                                                                      .toSet()
-                                                                      .toList()
-                                                                    ..sort((a, b) {
-                                                                      try {
-                                                                        final timeA = TimeOfDay(
-                                                                            hour: int.parse(a.split(':')[0]),
-                                                                            minute: int.parse(a.split(':')[1]));
-                                                                        final timeB = TimeOfDay(
-                                                                            hour: int.parse(b.split(':')[0]),
-                                                                            minute: int.parse(b.split(':')[1]));
-                                                                        return timeA.hour.compareTo(timeB.hour) != 0
-                                                                            ? timeA.hour.compareTo(timeB.hour)
-                                                                            : timeA.minute.compareTo(timeB.minute);
-                                                                      } catch (e) {
-                                                                        return a.compareTo(b);
-                                                                      }
-                                                                    });
-
-                                                                  final pdfDoc = await buildPdf(organizedData, slotLabels);
-                                                                  await Printing.layoutPdf(onLayout: (format) => pdfDoc.save());
-                                                                },
-                                                                child: const Text('طباعة الجدول'),
+                                                  onDraggableCanceled: (_, __) {
+                                                    draggedSubject = null;
+                                                    fromDayKey = null;
+                                                    fromSlot = null;
+                                                  },
+                                                  onDragEnd: (_) {
+                                                    draggedSubject = null;
+                                                    fromDayKey = null;
+                                                    fromSlot = null;
+                                                  },
+                                                  child: Text(subject,
+                                                      style: const TextStyle(
+                                                          color: Colors.white)),
+                                                )
+                                              : Text(subject,
+                                                  style: const TextStyle(
+                                                      color: Colors.white));
+                                        }).toList()
+                                      : [
+                                          const Text('-',
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.white))
+                                        ],
+                                ),
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ],
+                    );
+                  }).toList(),
+                ],
               ),
-                       ],
-        ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  generateSchedule(); // إذا كانت موجودة
+                  setState(() {
+                    isDragEnabled = true;
+                  });
+                },
+                child: const Text('توليد الجدول'),
+              ),
+              const SizedBox(width: 12),
+              ElevatedButton(
+                onPressed: () async {
+                  try {
+                    final transformed = schedule.map((item) {
+                      // نبحث عن اليوم المطابق في examDays
+                      final matchedDay = examDays.firstWhere(
+                        (day) =>
+                            day['day'] == item['day'] &&
+                            day['date'] == item['date'],
+                        orElse: () => null,
+                      );
+
+                      return {
+                        'subject': item['subject'],
+                        'level': item['level'],
+                        'day': matchedDay != null
+                            ? matchedDay['id']
+                            : 0, // نحصل على id اليوم
+                        'slot': item['slot'],
+                      };
+                    }).toList();
+
+                    await sendSchedules(transformed);
+                  } catch (e) {
+                    print("خطأ أثناء التحويل أو الإرسال: $e");
+                  }
+                },
+                child: const Text('حفظ الجدول'),
+              ),
+              const SizedBox(width: 12),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<UserCubit>().resetSchedules(context);
+                },
+                child: const Text('تصفير الجدول'),
+              ),
+              const SizedBox(width: 12),
+              ElevatedButton(
+                onPressed: () async {
+                  final organizedData = <String, Map<String, dynamic>>{};
+                  for (var item in schedule) {
+                    final day = item['day'].toString();
+                    final date = item['date'].toString();
+                    final dayKey = '$day|$date';
+                    final slot = item['slot']?.toString() ??
+                        item['time']?.toString() ??
+                        'غير محدد';
+                    final subject = item['subject'].toString();
+
+                    organizedData.putIfAbsent(
+                      dayKey,
+                      () => {
+                        'day': day,
+                        'date': date,
+                        'slots': <String, List<String>>{},
+                      },
+                    );
+
+                    Map<String, List<String>> slots =
+                        organizedData[dayKey]!['slots'];
+                    slots.putIfAbsent(slot, () => []);
+                    slots[slot]!.add(subject);
+                  }
+
+                  final slotLabels = schedule
+                      .map((item) =>
+                          item['slot']?.toString() ??
+                          item['time']?.toString() ??
+                          'غير محدد')
+                      .toSet()
+                      .toList()
+                    ..sort((a, b) {
+                      try {
+                        final timeA = TimeOfDay(
+                            hour: int.parse(a.split(':')[0]),
+                            minute: int.parse(a.split(':')[1]));
+                        final timeB = TimeOfDay(
+                            hour: int.parse(b.split(':')[0]),
+                            minute: int.parse(b.split(':')[1]));
+                        return timeA.hour.compareTo(timeB.hour) != 0
+                            ? timeA.hour.compareTo(timeB.hour)
+                            : timeA.minute.compareTo(timeB.minute);
+                      } catch (e) {
+                        return a.compareTo(b);
+                      }
+                    });
+
+                  final pdfDoc = await buildPdf(organizedData, slotLabels);
+                  await Printing.layoutPdf(onLayout: (format) => pdfDoc.save());
+                },
+                child: const Text('طباعة الجدول'),
+              ),
+            ],
+          ),
           const SizedBox(height: 16),
         ],
       ),
