@@ -74,7 +74,7 @@ class AppDrawer extends StatelessWidget {
               Icons.linear_scale,
               color: Colors.blue,
             ),
-            title: const Text('Linear',
+            title: const Text('توزيع المراقبين والمواد',
                 style: TextStyle(color: Colors.white, fontSize: 18)),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/linear');

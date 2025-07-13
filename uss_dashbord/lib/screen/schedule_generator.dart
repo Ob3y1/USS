@@ -25,6 +25,7 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
   String? draggedSubject;
   String? fromDayKey;
   String? fromSlot;
+  bool isSaved = false;
 
   Map<String, String> getDayAndDate(int dayId) {
     final dayData =
@@ -195,6 +196,37 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
       print(response);
     } else {
       print("فشل في حفظ الجدول: ${response.statusMessage}");
+    }
+    Future<void> sendSchedules(dynamic data) async {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      var headers = {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      };
+
+      var dio = Dio();
+      try {
+        var response = await dio.post(
+          'http://localhost:8000/api/schedules',
+          data: json.encode(data),
+          options: Options(headers: headers),
+        );
+
+        print("Data to send: ${json.encode(data)}");
+
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          print("تم حفظ الجدول بنجاح");
+        } else if (response.statusCode == 202) {
+          throw Exception("لم يتم الحفظ: الجدول ممتلئ مسبقًا");
+        } else {
+          print(response.statusCode);
+          throw Exception("فشل في حفظ الجدول: ${response.statusMessage}");
+        }
+      } catch (e) {
+        // أرمي الاستثناء لكي يتم التعامل معه في واجهة المستخدم (مثل SnackBar)
+        rethrow;
+      }
     }
   }
 
@@ -501,10 +533,14 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  generateSchedule(); // إذا كانت موجودة
+                  generateSchedule(); // دالة توليد الجدول
                   setState(() {
                     isDragEnabled = true;
+                    isSaved = false;
                   });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('تم توليد الجدول')),
+                  );
                 },
                 child: const Text('توليد الجدول'),
               ),
@@ -513,7 +549,6 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                 onPressed: () async {
                   try {
                     final transformed = schedule.map((item) {
-                      // نبحث عن اليوم المطابق في examDays
                       final matchedDay = examDays.firstWhere(
                         (day) =>
                             day['day'] == item['day'] &&
@@ -524,16 +559,23 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                       return {
                         'subject': item['subject'],
                         'level': item['level'],
-                        'day': matchedDay != null
-                            ? matchedDay['id']
-                            : 0, // نحصل على id اليوم
+                        'day': matchedDay != null ? matchedDay['id'] : 0,
                         'slot': item['slot'],
                       };
                     }).toList();
 
                     await sendSchedules(transformed);
+
+                    setState(() {
+                      isSaved = true;
+                    });
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('تم حفظ الجدول بنجاح')),
+                    );
                   } catch (e) {
-                    print("خطأ أثناء التحويل أو الإرسال: $e");
+                    print(
+                        'جدول الامتحانات يحتوي على بيانات. يرجى التصفير أولاً قبل إدخال بيانات جديدة.');
                   }
                 },
                 child: const Text('حفظ الجدول'),
@@ -542,6 +584,12 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
               ElevatedButton(
                 onPressed: () {
                   context.read<UserCubit>().resetSchedules(context);
+
+                  setState(() {
+                    schedule.clear();
+                    isSaved = false;
+                    isDragEnabled = false;
+                  });
                 },
                 child: const Text('تصفير الجدول'),
               ),

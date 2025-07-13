@@ -59,12 +59,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   TextFormField(
                     controller: context.read<UserCubit>().emailController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'البريد الإلكتروني',
-                      prefixIcon: Icon(Icons.email,
-                          color: Colors.white), // لون الأيقونة
-                      border: OutlineInputBorder(),
-                      labelStyle: TextStyle(color: Colors.white), // لون التسمية
+                      labelStyle:
+                          const TextStyle(color: Colors.white, fontSize: 16),
+                      prefixIcon: const Icon(Icons.email, color: Colors.blue),
+                      filled: true,
+                      fillColor: Colors.black12, // خلفية الحقل بلون خفيف
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Colors.blueGrey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide:
+                            const BorderSide(color: Colors.blue, width: 2),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
                     ),
                     style: const TextStyle(color: Colors.white),
                     keyboardType: TextInputType.emailAddress,
@@ -86,15 +101,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
                       labelText: 'كلمة المرور',
-                      prefixIcon: const Icon(Icons.lock, color: Colors.white),
-                      labelStyle: const TextStyle(color: Colors.white), // لون التسمية
-                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.lock, color: Colors.blue),
+                      labelStyle:
+                          const TextStyle(color: Colors.white), // لون التسمية
+                      filled: true,
+                      fillColor: Colors.black12, // خلفية الحقل بلون خفيف
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Colors.blueGrey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide:
+                            const BorderSide(color: Colors.blue, width: 2),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword
                               ? Icons.visibility_off
                               : Icons.visibility,
-                          color: Colors.white,
+                          color: Colors.blue,
                         ),
                         onPressed: () {
                           setState(() {
@@ -124,9 +155,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: const Text(
                               'تسجيل الدخول',
                               style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 18,
-                              ),
+                                  color: Colors.blue,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
