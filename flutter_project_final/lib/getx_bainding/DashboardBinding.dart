@@ -1,3 +1,4 @@
+import 'package:flutter_project_final/moduels/Cheating/CheatingDetectionView%20.dart';
 import 'package:get/get.dart';
 import 'package:flutter_project_final/moduels/dashpord/dashboard_controller.dart';
 import 'package:flutter_project_final/moduels/profile/profile_controller.dart';
@@ -11,5 +12,7 @@ class DashboardBinding implements Bindings {
     Get.put(ProfileController());
     Get.put(ScheduleController());
     Get.put(MonitorController());
+        Get.put(DetectionController());
+
   }
 }

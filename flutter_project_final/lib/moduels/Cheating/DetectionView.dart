@@ -7,18 +7,26 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 class DetectionView extends StatelessWidget {
   final DetectionController controller = Get.put(DetectionController());
-  @override  Widget build(BuildContext context) {
-    return Scaffold( body: Stack(children: [
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
           // 🌄 الخلفية
-         Positioned.fill(
+          Positioned.fill(
             child: Image.asset(
-              'assets/images/AI exam monitoring s.png',          fit: BoxFit.cover,      ),),
+              'assets/images/AI exam monitoring s.png',
+              fit: BoxFit.cover,
+            ),
+          ),
           // 🔲 التعتيم Container(color: Colors.black.withOpacity(0.55)),          // 📋 المحتوى
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Obx(
-                () => Column(   crossAxisAlignment: CrossAxisAlignment.start,children: [
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     const SizedBox(height: 10),
                     const Text(
                       '🚨 الحالات المسجلة',
@@ -54,6 +62,7 @@ class DetectionView extends StatelessWidget {
                                       margin: const EdgeInsets.only(bottom: 12),
                                       padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
+                                        // ignore: deprecated_member_use
                                         color: Colors.white.withOpacity(0.07),
                                         borderRadius: BorderRadius.circular(14),
                                         border: Border.all(
@@ -62,6 +71,7 @@ class DetectionView extends StatelessWidget {
                                         ),
                                         boxShadow: [
                                           BoxShadow(
+                                            // ignore: deprecated_member_use
                                             color: Colors.black.withOpacity(
                                               0.2,
                                             ),
@@ -79,7 +89,8 @@ class DetectionView extends StatelessWidget {
                                               10,
                                             ),
                                             child: Image.network(
-                                              '${ServiceConf.domainNameServer}/storage/snapshots/${item.imageName}',
+                                              '${ServiceConf.domainNameServer}/storage/${item.imageName}',
+
                                               height: 110,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
@@ -203,4 +214,20 @@ class DetectionView extends StatelessWidget {
                                     .slideY(
                                       begin: 0.2,
                                       duration: Duration(milliseconds: 500),
-                                    ).fadeIn(duration: Duration(milliseconds: 500),);},), ),],), ),)),],),);}}
+                                    )
+                                    .fadeIn(
+                                      duration: Duration(milliseconds: 500),
+                                    );
+                              },
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

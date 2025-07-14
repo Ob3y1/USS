@@ -30,6 +30,7 @@ class LoginService {
 
         token = jsonResponse['token'] ?? '';
         var userData = jsonResponse['user'];
+        print(token);
 
         if (token.isNotEmpty) {
           box.write('token', token);

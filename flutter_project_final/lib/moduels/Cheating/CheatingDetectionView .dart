@@ -1,6 +1,6 @@
+import 'package:flutter_project_final/Config/service_conf.dart';
 import 'package:flutter_project_final/Service/cheating_service.dart';
 import 'package:get/get.dart';
-
 
 class DetectionItem {
   final int id;
@@ -44,59 +44,28 @@ class DetectionItem {
 class DetectionController extends GetxController {
   final detections = <DetectionItem>[].obs;
   final _service = CheatingService();
-@override
-void onInit() {
-  super.onInit();
+  @override
+  void onInit() {
+    super.onInit();
 
-  // // ✅ بيانات تجريبية لمعاينة التصميم فقط
-  // detections.add(DetectionItem(
-  //   id: 999,
-  //   cheatType: "استخدام هاتف",
-  //   imageName: "snapshot_test.jpg",
-  //   timestamp: "10:30 ص",
-  //   subjectName: "رياضيات",
-  //   hall: "القاعة 4",
-  //   examDay: "الاثنين",
-  //   examDate: "2025-06-30",
-  //   examTime: "10:30",
-
-    
-  // ));
-  // detections.add(DetectionItem(
-  //   id: 999,
-  //   cheatType: "استخدام هاتف",
-  //   imageName: "snapshot_test.jpg",
-  //   timestamp: "10:30 ص",
-  //   subjectName: "رياضيات",
-  //   hall: "القاعة 4",
-  //   examDay: "الاثنين",
-  //   examDate: "2025-06-30",
-  //   examTime: "10:30",
-
-    
-  // ));
-  // detections.add(DetectionItem(
-  //   id: 999,
-  //   cheatType: "استخدام هاتف",
-  //   imageName: "snapshot_test.jpg",
-  //   timestamp: "10:30 ص",
-  //   subjectName: "رياضيات",
-  //   hall: "القاعة 4",
-  //   examDay: "الاثنين",
-  //   examDate: "2025-06-30",
-  //   examTime: "10:30",
-
-    
-  // ));
-
-  // 🌀 تحميل البيانات الحقيقية بعد ذلك
-  loadIncidents();
-}
+    // 🌀 تحميل البيانات الحقيقية بعد ذلك
+    loadIncidents();
+  }
 
   void loadIncidents() async {
     try {
       final result = await _service.fetchPendingIncidents();
-     detections.addAll(result);
+
+      for (var item in result) {
+        final imageUrl =
+    '${ServiceConf.domainNameServer}/storage/${item.imageName}';
+
+        print(
+          "📸 Full URL: ${ServiceConf.domainNameServer}/storage/${item.imageName}",
+        );
+      }
+
+      detections.addAll(result);
       print("✅ عدد الحالات: ${result.length}");
     } catch (e) {
       print("❌ فشل تحميل الحالات: $e");
@@ -104,12 +73,24 @@ void onInit() {
   }
 
   void sendAction(DetectionItem item) async {
-    final success = await _service.updateIncidentAction(item.id, item.actionTaken.value);
+    final success = await _service.updateIncidentAction(
+      item.id,
+      item.actionTaken.value,
+    );
     if (success) {
-      Get.snackbar("تم الإرسال", "✅ تم تسجيل الإجراء بنجاح", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        "تم الإرسال",
+        "✅ تم تسجيل الإجراء بنجاح",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
       detections.remove(item);
     } else {
-      Get.snackbar("خطأ", "❌ لم يتم إرسال الإجراء", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        "خطأ",
+        "❌ لم يتم إرسال الإجراء",
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 }
