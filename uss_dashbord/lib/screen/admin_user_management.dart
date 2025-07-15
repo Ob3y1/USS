@@ -305,19 +305,15 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
       'Sunday': 'الأحد',
       'Monday': 'الإثنين',
       'Tuesday': 'الثلاثاء',
-      'Wednesday': 'الأربعاء',
-      'Thursday': 'الخميس',
       'Friday': 'الجمعة',
     };
 
     List<Map<String, dynamic>> backendDays = [
-      {"id": 5, "day": "Friday"},
-      {"id": 6, "day": "Sunday"},
-      {"id": 7, "day": "Tuesday"},
-      {"id": 8, "day": "Saturday"},
-      {"id": 9, "day": "Monday"},
-      {"id": 10, "day": "Wednesday"},
-      {"id": 11, "day": "Thursday"}
+      {"id": 1, "day": "Friday"},
+      {"id": 2, "day": "Saturday"},
+      {"id": 3, "day": "Sunday"},
+      {"id": 4, "day": "Monday"},
+      {"id": 5, "day": "Tuesday"},
     ];
 
     allDays = backendDays
@@ -405,9 +401,31 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
       }
     } on DioException catch (e) {
       if (e.response != null) {
-        print('Response data: ${e.response?.data}');
+        final errors = e.response?.data['errors'] as Map<String, dynamic>?;
+
+        if (errors != null) {
+          String message = '';
+
+          errors.forEach((key, value) {
+            message += '${value[0]}\n'; // عرض أول خطأ لكل حقل
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message.trim()),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('حدث خطأ غير متوقع أثناء الإرسال'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
-      print('Failed to submit: $e');
+      print(e);
     }
   }
 

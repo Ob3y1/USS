@@ -372,7 +372,32 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     const SizedBox(height: 16),
                     Center(
                       child: ElevatedButton(
-                        onPressed: onAdd,
+                        onPressed: () async {
+                          onAdd(); // أضف المشرف أو أي كيان آخر
+                          await fetchSubjectsFromApi(); // إعادة جلب المواد بعد الإضافة
+                          context
+                              .read<UserCubit>()
+                              .subjectNameController
+                              .clear();
+                          context
+                              .read<UserCubit>()
+                              .subjectStudentsController
+                              .clear();
+                          context
+                              .read<UserCubit>()
+                              .roomCapacityController
+                              .clear();
+                          context.read<UserCubit>().examDateController.clear();
+                          context
+                              .read<UserCubit>()
+                              .examPeriodFromController
+                              .clear();
+                          context.read<UserCubit>().roomNameController.clear();
+                          context
+                              .read<UserCubit>()
+                              .roomCameraControllers
+                              .clear();
+                        },
                         child: const Text(
                           'إضافة',
                           style: TextStyle(color: Colors.blue),
@@ -674,11 +699,12 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                         DataCell(
                           IconButton(
                             icon: const Icon(Icons.clear, color: Colors.blue),
-                            onPressed: () {
+                            onPressed: () async {
                               final subjectId = s['id'];
                               context
                                   .read<UserCubit>()
                                   .deleteSubject(subjectId as String);
+                              await fetchSubjectsFromApi();
                             },
                           ),
                         ),
@@ -899,6 +925,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                             } catch (error) {
                               print('خطأ في الاتصال أو الحذف: $error');
                             }
+                            await fetchSubjectsFromApi();
                           },
                         ),
                       ),
@@ -1061,6 +1088,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                         } catch (e) {
                           print('خطأ في الاتصال أو الحذف: $e');
                         }
+                        await fetchSubjectsFromApi();
                       },
                     ),
                   ),
@@ -1193,6 +1221,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                         } catch (e) {
                           print('خطأ في الاتصال أو الحذف: $e');
                         }
+                        await fetchSubjectsFromApi();
                       },
                     ),
                   ),
