@@ -18,6 +18,9 @@ import glob
 import base64
 from io import BytesIO
 from PIL import Image
+import threading
+
+
 
 
 # إعدادات عامة
@@ -25,6 +28,10 @@ violation_folder = "violations2"
 os.makedirs(violation_folder, exist_ok=True)
 report_file = "violations_report.csv"
 font_path = "arial.ttf"  # تأكد من وجود الخط
+running = False
+raw_frame = None          # الفريم الخام من الكاميرا
+latest_frame = None       # الفريم المعالج للإرسال
+frame_lock = threading.Lock()  # قفل لمنع التداخل بين الـ threads
 
 # تحميل الموديلات
 model = YOLO('C:/Users/Ali/Downloads/Hul-E.v3i.coco/themodel2222/yolov8_exp1/weights/best.pt')
@@ -47,17 +54,27 @@ arabic_translations = {
     "Hand-Between-Students": "تحذير اليد بين طالبين"
 }
 
-ALLOWED_MARGIN = 20
-HAND_OUTSIDE_DURATION_THRESHOLD = 1.5  # ثواني
-HAND_SPEED_THRESHOLD = 30  # بكسل/إطار
-MIN_ELBOW_ANGLE = 30
-MAX_ELBOW_ANGLE = 160
-FINGER_OPEN_THRESHOLD = 0.2
+# ALLOWED_MARGIN = 20
+# HAND_OUTSIDE_DURATION_THRESHOLD = 1.5  # ثواني
+# HAND_SPEED_THRESHOLD = 15  # بكسل/إطار
+# MIN_ELBOW_ANGLE = 30###########
+# MAX_ELBOW_ANGLE = 160##########
+# FINGER_OPEN_THRESHOLD = 0.2
+
+ALLOWED_MARGIN = 35
+HAND_OUTSIDE_DURATION_THRESHOLD = 0.8
+HAND_SPEED_THRESHOLD = 4
+MIN_ELBOW_ANGLE = 25
+MAX_ELBOW_ANGLE = 165
+FINGER_OPEN_THRESHOLD = 0.15
+ALERT_REPEAT_COOLDOWN = 10  # عدد الثواني لإعادة تسجيل نفس التنبيه
+
+
 
 hand_outside_zone_start = defaultdict(float)
 previous_wrist_positions = {}
 violations_log = []
-alerted_ids = set()
+alerted_ids = {}
 head_rotation_start = {} 
 # خارج كل الدوال (في بداية الملف)
 head_rotation_start = {}
@@ -155,10 +172,23 @@ for path in calculator_images:
             calculator_descriptors.append(des)
 
 
+#import mediapipe as mp
+
+# إنشاء كائنات MediaPipe مرة واحدة فقط
+mp_hands = mp.solutions.hands
+hands_detector = mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.8, min_tracking_confidence=0.8)
+
+mp_pose = mp.solutions.pose
+pose_detector = mp_pose.Pose(static_image_mode=False, model_complexity=1, min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
 
-def process_frame(frame):
-    global hand_outside_zone_start, previous_wrist_positions, alerted_ids, head_rotation_start
+def process_frame(frame, hands_detector, pose_detector):
+
+    global hand_outside_zone_start, previous_wrist_positions,head_rotation_start
+    global alerted_ids
+    if 'alerted_ids' not in globals():
+        alerted_ids = {}
+
     global calculator_descriptors, sift, bf
 
 
@@ -202,16 +232,16 @@ def process_frame(frame):
         if h == 0 or w == 0:
             return False
         aspect_ratio = w / h
-        if aspect_ratio < 0.2 or aspect_ratio > 1.0:
+        if aspect_ratio < 0.15 or aspect_ratio > 1.4:#######################
             return False
         resized = cv2.resize(device_img, (150, 150))
         gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
         edges = cv2.Canny(gray, 80, 200)
         edge_density = np.sum(edges > 0) / (150 * 150)
-        if edge_density < 0.02:
+        if edge_density < 0.015:####################
             return False
         corners = cv2.goodFeaturesToTrack(gray, 10, 0.01, 10)
-        if corners is None or len(corners) < 4:
+        if corners is None or len(corners) < 2:##########################
             return False
         blur = cv2.GaussianBlur(gray, (5, 5), 0)
         edges = cv2.Canny(blur, 50, 150)
@@ -220,11 +250,11 @@ def process_frame(frame):
             peri = cv2.arcLength(cnt, True)
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, True)
             area = cv2.contourArea(cnt)
-            if len(approx) == 4 and area > 1000:
+            if len(approx) == 4 and area > 500:###############
                 return True
         return False
 
-    def is_phone_in_hand(phone_center, hand_points, threshold=60):
+    def is_phone_in_hand(phone_center, hand_points, threshold=100):##################
         px, py = phone_center
         return any(np.linalg.norm(np.array([px, py]) - np.array(hp)) < threshold for hp in hand_points)
 
@@ -265,7 +295,7 @@ def process_frame(frame):
             continue
 
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        hands_result = mp.solutions.hands.Hands(False, max_num_hands=2, min_detection_confidence=0.8, min_tracking_confidence=0.8).process(rgb_frame)
+        hands_result = hands_detector.process(rgb_frame)############
         hand_points = []
         if hands_result.multi_hand_landmarks:
             for hl in hands_result.multi_hand_landmarks:
@@ -276,12 +306,17 @@ def process_frame(frame):
         if in_hand:
             if tid not in in_hand_start:
                 in_hand_start[tid] = now
-            elif now - in_hand_start[tid] > 1.5:
+            elif now - in_hand_start[tid] > 0.2:###############
                 section_id, row_num, col_num = get_position_description(cx, cy, frame_width, frame_height)
                 pos_desc = f"الموقع: الصف {row_num}، العمود {col_num}"
                 frame = render_text_arabic(frame, f"هاتف مع الطالب - {row_num} {col_num}", (cx - 80, cy - 40), font_path, 20)
                 alert_key = f"PhoneInHand_{section_id}_{tid}"
-                if alert_key not in alerted_ids:
+                current_time = time.time()
+                last_alert_time = alerted_ids.get(alert_key, 0)
+                if current_time - last_alert_time > ALERT_REPEAT_COOLDOWN:
+                    alerted_ids[alert_key] = current_time
+    # سجل الغش
+
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     filename = f"Cheat_Phone_{section_id}_{tid}_{timestamp}.jpg"
                     cv2.imwrite(os.path.join(violation_folder, filename), frame)
@@ -298,8 +333,14 @@ def process_frame(frame):
         else:
             in_hand_start.pop(tid, None)
 
+    # تنظيف القيم القديمة
+    for tid in list(in_hand_start):
+     if tid not in [t.track_id for t in device_tracks if t.is_confirmed()]:
+        del in_hand_start[tid]
     setattr(process_frame, "kalman_filters", kalman_filters)
     setattr(process_frame, "in_hand_start", in_hand_start)
+ 
+
 
     for box in results.boxes:
         x1, y1, x2, y2 = map(int, box.xyxy[0])
@@ -308,9 +349,9 @@ def process_frame(frame):
         class_name = custom_names.get(cls)
         if not class_name:
             continue
-        if class_name == "Head-Suspiciousrotation" and conf < 0.8:
+        if class_name == "Head-Suspiciousrotation" and conf < 0.3:#######################
             continue
-        if class_name == "Hand-Suspiciousrotation" and conf < 0.7:
+        if class_name == "Hand-Suspiciousrotation" and conf < 0.5:#######################
             continue
         x, y, w, h = x1, y1, x2 - x1, y2 - y1
         raw_detections.append(([x, y, w, h], conf, cls))
@@ -318,8 +359,8 @@ def process_frame(frame):
     tracks = tracker.update_tracks(raw_detections, frame=frame)
 
     for track in tracks:
-        if not track.is_confirmed():
-            continue
+        # if not track.is_confirmed():
+        #     continue
 
         track_id = track.track_id
         ltrb = track.to_ltrb()
@@ -337,15 +378,19 @@ def process_frame(frame):
             current_time = time.time()
 
             if alert_key not in head_rotation_start:
-                head_rotation_start[alert_key] = current_time
-            elif current_time - head_rotation_start[alert_key] > 5:
-                if alert_key not in alerted_ids:
+                 head_rotation_start[alert_key] = current_time
+            elif current_time - head_rotation_start[alert_key] > 0:############
+                 last_alert_time = alerted_ids.get(alert_key, 0)
+                 if current_time - last_alert_time > ALERT_REPEAT_COOLDOWN:
+                    alerted_ids[alert_key] = current_time
+    # سجل الغش
+
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     filename = f"Cheat_Head_{section_id}_{track_id}_{timestamp}.jpg"
                     cv2.imwrite(os.path.join(violation_folder, filename), frame)
                     violation = {
                         "class_name": "Head-Suspiciousrotation",
-                        "arabic_name": "حالة مشبوهة في الرأس",
+                        "arabic_name": "هناك حالة راس مشتبه بها",
                         "position": pos_desc,
                         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
                         "image_base64": encode_image_to_base64(frame)
@@ -354,9 +399,9 @@ def process_frame(frame):
                     violations_log.append(violation)
                     alerted_ids.add(alert_key)
 
-                text = f"{arabic_translations[class_name]} - {pos_desc}"
-                frame = render_text_arabic(frame, text, (x1, y1 - 30), font_path, font_size=26, color=(0, 165, 255))
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 165, 255), 3)
+                    text = f"{arabic_translations[class_name]} - {pos_desc}"
+                    frame = render_text_arabic(frame, text, (x1, y1 - 30), font_path, font_size=26, color=(0, 165, 255))
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 165, 255), 3)
 
             continue
 
@@ -372,7 +417,7 @@ def process_frame(frame):
         current_hand_centers.append((center_x, center_y))
 
         img_rgb = cv2.cvtColor(roi, cv2.COLOR_BGR2RGB)
-        results_pose = pose.process(img_rgb)
+        results_pose = pose_detector.process(img_rgb)#################
         if not results_pose.pose_landmarks:
             continue
 
@@ -405,7 +450,7 @@ def process_frame(frame):
                 if hand_outside_zone_start.get((track_id, side), 0) == 0:
                     hand_outside_zone_start[(track_id, side)] = time.time()
                 elif time.time() - hand_outside_zone_start[(track_id, side)] > HAND_OUTSIDE_DURATION_THRESHOLD:
-                    if wrist_xy[1] < shoulder_xy[1] and abs(wrist_xy[0] - shoulder_xy[0]) > 50:
+                    if wrist_xy[1] < shoulder_xy[1] and abs(wrist_xy[0] - shoulder_xy[0]) > 20:###############
                         suspicious = True
 
             prev_wrist_pos = previous_wrist_positions.get((track_id, side), None)
@@ -416,26 +461,33 @@ def process_frame(frame):
             previous_wrist_positions[(track_id, side)] = wrist_xy
 
             if elbow_angle < MIN_ELBOW_ANGLE or elbow_angle > MAX_ELBOW_ANGLE:
-                suspicious = True
+                 suspicious = True
 
-            table_level_y = hip_xy[1] + 20
+            table_level_y = hip_xy[1] + 30
             if wrist_xy[1] > table_level_y and abs(wrist_xy[0] - shoulder_xy[0]) < 80:
-                suspicious = False
+               suspicious = False
 
-            if wrist_xy[1] > shoulder_xy[1] + 20 and abs(wrist_xy[0] - shoulder_xy[0]) < 80:
-                suspicious = False
+            if wrist_xy[1] > shoulder_xy[1] + 10 and abs(wrist_xy[0] - shoulder_xy[0]) < 80:
+               suspicious = False
+
 
         if suspicious:
             section_id, row_num, col_num = get_position_description(center_x, center_y, frame_width, frame_height)
             pos_desc = f"الموقع: الصف {row_num}، العمود {col_num}"
             alert_key = f"{class_name}_{section_id}_{track_id}"
-            if alert_key not in alerted_ids:
+            current_time = time.time()
+            last_alert_time = alerted_ids.get(alert_key, 0)
+            if current_time - last_alert_time > ALERT_REPEAT_COOLDOWN:
+                alerted_ids[alert_key] = current_time
+    # سجل الغش
+
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 filename = f"Cheat_Hand_{section_id}_{track_id}_{timestamp}.jpg"
                 cv2.imwrite(os.path.join(violation_folder, filename), frame)
                 violation = {
                     "class_name": class_name,
-                    "arabic_name": arabic_translations.get(class_name, class_name),
+                    "arabic_name": "حالة يد",
+                    #"arabic_name": arabic_translations.get(class_name, class_name),
                     "position": pos_desc,
                     "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
                     "image_base64": encode_image_to_base64(frame)

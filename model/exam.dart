@@ -110,7 +110,7 @@ class _CheatDetectionHomePageState extends State<CheatDetectionHomePage> {
       _showSnackBar("⚠️ فشل في جلب المخالفات");
     }
   }
-
+ //////////////
   Future<void> clearViolations() async {
     final url = Uri.parse("$fastApiUrl/clear_violations");
     final response = await http.post(url);
@@ -121,7 +121,7 @@ class _CheatDetectionHomePageState extends State<CheatDetectionHomePage> {
       _showSnackBar("❌ فشل في مسح المخالفات");
     }
   }
-
+//////////////
   Future<void> confirmViolation(Map<String, dynamic> violation) async {
     try {
       final response = await http.post(
