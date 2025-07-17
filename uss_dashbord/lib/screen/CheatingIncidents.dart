@@ -189,23 +189,26 @@ class _CheatingListScreenState extends State<CheatingListScreen> {
         );
       },
       errorBuilder: (_, __, ___) =>
-          const Icon(Icons.broken_image_outlined, color: Colors.white),
+          const Icon(Icons.broken_image_outlined, color: Colors.black87),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         title: const Text('سجل حالات الغش',
             style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold)),
+              color: Colors.black87, // تغيير لون النص إلى الأسود
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Cairo',
+            )),
+        backgroundColor: Colors.white, // خلفية بيضاء
+        elevation: 1, // ظل خفيف للتمييز
         iconTheme: const IconThemeData(color: Colors.blue),
-        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
       ),
       drawer: const AppDrawer(),
       body: isLoading
@@ -213,7 +216,7 @@ class _CheatingListScreenState extends State<CheatingListScreen> {
           : incidents.isEmpty
               ? const Center(
                   child: Text('لا توجد حالات غش مسجلة',
-                      style: TextStyle(color: Colors.white)),
+                      style: TextStyle(color: Colors.black87)),
                 )
               : ListView.builder(
                   itemCount: incidents.length,
@@ -221,7 +224,7 @@ class _CheatingListScreenState extends State<CheatingListScreen> {
                     final incident = incidents[index];
                     return Card(
                       margin: const EdgeInsets.all(8),
-                      color: const Color.fromARGB(255, 60, 60, 75),
+                      color: Colors.white70,
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Row(
@@ -235,20 +238,20 @@ class _CheatingListScreenState extends State<CheatingListScreen> {
                                 children: [
                                   Text('نوع الغش: ${incident.cheatingType}',
                                       style: const TextStyle(
-                                          color: Colors.white,
+                                          color: Colors.black87,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 4),
                                   Text('المادة: ${incident.subject.name}',
                                       style: const TextStyle(
-                                          color: Colors.white70)),
+                                          color: Colors.black87)),
                                   if (incident.supervisor != null)
                                     Padding(
                                       padding: const EdgeInsets.only(top: 4),
                                       child: Text(
                                           'المشرف: ${incident.supervisor!.name}',
                                           style: const TextStyle(
-                                              color: Colors.white70)),
+                                              color: Colors.black87)),
                                     ),
                                   if (incident.hall != null)
                                     Padding(
@@ -256,13 +259,13 @@ class _CheatingListScreenState extends State<CheatingListScreen> {
                                       child: Text(
                                           'القاعة: ${incident.hall!.location}',
                                           style: const TextStyle(
-                                              color: Colors.white70)),
+                                              color: Colors.black87)),
                                     ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 4),
                                     child: Text('الوقت: ${incident.timestamp}',
                                         style: const TextStyle(
-                                            color: Colors.white70)),
+                                            color: Colors.black87)),
                                   ),
                                   if (incident.examDay != null &&
                                       incident.examTime != null)
@@ -271,7 +274,7 @@ class _CheatingListScreenState extends State<CheatingListScreen> {
                                       child: Text(
                                         'موعد الامتحان: ${incident.examDay!.day} ${incident.examDay!.date} - ${incident.examTime!.time}',
                                         style: const TextStyle(
-                                            color: Colors.white70),
+                                            color: Colors.black87),
                                       ),
                                     ),
                                   Padding(
@@ -282,7 +285,7 @@ class _CheatingListScreenState extends State<CheatingListScreen> {
                                         color:
                                             incident.dealingWithCheating != null
                                                 ? Colors.green
-                                                : Colors.orange,
+                                                : Colors.blue,
                                       ),
                                     ),
                                   ),

@@ -170,7 +170,7 @@ class _EditHallPageState extends State<EditHallPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'تعديل القاعة',
@@ -179,7 +179,8 @@ class _EditHallPageState extends State<EditHallPage> {
         ),
         iconTheme: const IconThemeData(color: Colors.blue),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+        backgroundColor: Colors.white, // خلفية بيضاء
+        elevation: 1, // ظل خفيف للتمييز
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -188,7 +189,7 @@ class _EditHallPageState extends State<EditHallPage> {
               child: ListView(
                 children: [
                   TextField(
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black87),
                     controller: locationController,
                     decoration: const InputDecoration(
                       labelText: 'مكان القاعة',
@@ -200,7 +201,7 @@ class _EditHallPageState extends State<EditHallPage> {
                   ),
                   const SizedBox(height: 16),
                   TextField(
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black87),
                     controller: chairNumberController,
                     decoration: const InputDecoration(
                       labelText: 'عدد الكراسي',
@@ -239,7 +240,7 @@ class _EditHallPageState extends State<EditHallPage> {
                         children: [
                           Expanded(
                             child: TextField(
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black87),
                               controller: ctrl,
                               decoration: InputDecoration(
                                 labelText: 'عنوان كاميرا ${idx + 1}',

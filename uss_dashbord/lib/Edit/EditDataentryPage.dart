@@ -141,9 +141,8 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
     }
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
         title: const Text(
           'تعديل بيانات المادة',
           textAlign: TextAlign.center,
@@ -151,6 +150,8 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
         ),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.blue),
+        backgroundColor: Colors.white, // خلفية بيضاء
+        elevation: 1, // ظل خفيف للتمييز
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -158,7 +159,7 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
           children: [
             TextField(
               controller: nameController,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.black87),
               decoration: const InputDecoration(
                 labelText: 'اسم المادة',
                 labelStyle: TextStyle(
@@ -171,7 +172,7 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
             TextField(
               controller: studentNumberController,
               keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.black87),
               decoration: const InputDecoration(
                 labelText: 'عدد الطلاب',
                 labelStyle: TextStyle(
@@ -184,7 +185,7 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
             TextField(
               controller: yearController,
               keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.black87),
               decoration: const InputDecoration(
                 labelText: 'المستوى الدراسي',
                 labelStyle: TextStyle(
@@ -213,13 +214,13 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
                     spec['name'],
                     style: TextStyle(
                       color: selectedSpecialties.contains(id)
-                          ? Colors.white
-                          : Colors.white70,
+                          ? Colors.black87
+                          : Colors.black,
                     ),
                   ),
                   selected: selectedSpecialties.contains(id),
                   selectedColor: Colors.lightBlueAccent,
-                  backgroundColor: const Color(0xFF3B4061),
+                  backgroundColor: Colors.white70,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -238,7 +239,7 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
             const SizedBox(height: 32),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.white70,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -247,7 +248,10 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               onPressed: saveChanges,
-              child: const Text('حفظ التعديلات', style: const TextStyle(color: Colors.lightBlueAccent),),
+              child: const Text(
+                'حفظ التعديلات',
+                style: const TextStyle(color: Colors.lightBlueAccent),
+              ),
             ),
           ],
         ),

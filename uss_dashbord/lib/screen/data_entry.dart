@@ -346,13 +346,13 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
               margin: const EdgeInsets.only(bottom: 32),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 61, 61, 68),
-                borderRadius: BorderRadius.circular(12),
+                color: Colors.white, // خلفية بيضاء بدل الداكن
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.9),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
+                    color: Colors.grey.withOpacity(0.7), // ظل خفيف
+                    blurRadius: 8,
+                    offset: const Offset(3, 3),
                   ),
                 ],
               ),
@@ -365,7 +365,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                       style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                          color: Colors.black87),
                     ),
                     const SizedBox(height: 12),
                     ...fields,
@@ -419,13 +419,13 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
               margin: const EdgeInsets.only(bottom: 32),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 61, 61, 68),
-                borderRadius: BorderRadius.circular(12),
+                color: Colors.white, // خلفية بيضاء بدل الداكن
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.9),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
+                    color: Colors.grey.withOpacity(0.7), // ظل خفيف
+                    blurRadius: 8,
+                    offset: const Offset(3, 3),
                   ),
                 ],
               ),
@@ -434,11 +434,13 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                   Text(
                     '$title',
                     style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      color: Colors.black87, // تغيير لون النص إلى الأسود
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Cairo',
+                    ),
                   ),
-                  const Divider(thickness: 2, color: Colors.white),
+                  const Divider(thickness: 2, color: Colors.black87),
                   const SizedBox(height: 15),
                   Expanded(
                     child: SingleChildScrollView(
@@ -469,13 +471,19 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
       return const Center(child: CircularProgressIndicator());
     }
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 50, 50, 65),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         title: const Text('إدخال البيانات',
-            style: TextStyle(color: Colors.white, fontSize: 24)),
+            style: TextStyle(
+              color: Colors.black87, // تغيير لون النص إلى الأسود
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Cairo',
+            )),
+        elevation: 1, // ظل خفيف للتمييز
         iconTheme: const IconThemeData(color: Colors.blue),
-        backgroundColor: Color.fromARGB(255, 50, 50, 65),
+        backgroundColor: Colors.white,
       ),
       drawer: const AppDrawer(),
       body: SingleChildScrollView(
@@ -493,9 +501,9 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                   controller: context.read<UserCubit>().subjectNameController,
                   decoration: const InputDecoration(
                     labelText: 'اسم المادة',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Colors.black87),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black87),
                 ),
                 const SizedBox(
                   height: 20,
@@ -505,10 +513,10 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                       context.read<UserCubit>().subjectStudentsController,
                   decoration: const InputDecoration(
                     labelText: 'عدد الطلاب',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Colors.black87),
                   ),
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black87),
                 ),
                 const SizedBox(
                   height: 20,
@@ -528,7 +536,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                   },
                   decoration: const InputDecoration(
                     labelText: 'المستوى',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Colors.black87),
                   ),
                   dropdownColor: Colors.black87,
                   style: const TextStyle(color: Colors.white),
@@ -552,7 +560,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     },
                     decoration: const InputDecoration(
                       labelText: 'الاختصاص',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: Colors.black87),
                     ),
                     dropdownColor: Colors.black87,
                     style: const TextStyle(color: Colors.white),
@@ -566,7 +574,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 75,
                     child: Text('ID',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
@@ -575,7 +583,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 75,
                     child: Text('الاسم',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
@@ -584,7 +592,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 75,
                     child: Text('عدد الطلاب',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
@@ -593,7 +601,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 75,
                     child: Text('المستوى',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
@@ -602,7 +610,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 75,
                     child: Text('الاختصاص',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
@@ -610,15 +618,15 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                         height: 70,
                         width: 75,
                         child: Text('تعديل',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18)))),
+                            style: TextStyle(
+                                color: Colors.black87, fontSize: 18)))),
                 DataColumn(
                     label: SizedBox(
                         height: 70,
                         width: 75,
                         child: Text('حذف',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18)))),
+                            style: TextStyle(
+                                color: Colors.black87, fontSize: 18)))),
               ],
               rows: subjects
                   .map((s) => DataRow(cells: [
@@ -629,7 +637,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                             child: Text(s['id'] ?? '',
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                    color: Colors.white, fontSize: 18)),
+                                    color: Colors.black87, fontSize: 18)),
                           ),
                         ),
                         DataCell(
@@ -639,7 +647,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                             child: Text(s['name'] ?? '',
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                    color: Colors.white, fontSize: 18)),
+                                    color: Colors.black87, fontSize: 18)),
                           ),
                         ),
                         DataCell(
@@ -649,7 +657,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                             child: Text(s['students'] ?? '',
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                    color: Colors.white, fontSize: 18)),
+                                    color: Colors.black87, fontSize: 18)),
                           ),
                         ),
                         DataCell(
@@ -662,7 +670,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                                 s['level'] ?? '',
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                    color: Colors.white, fontSize: 18),
+                                    color: Colors.black87, fontSize: 18),
                               ),
                             ),
                           ),
@@ -677,7 +685,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                                 s['specialization'] ?? '',
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                    color: Colors.white, fontSize: 18),
+                                    color: Colors.black87, fontSize: 18),
                               ),
                             ),
                           ),
@@ -723,9 +731,9 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                   controller: context.read<UserCubit>().roomNameController,
                   decoration: const InputDecoration(
                     labelText: 'اسم القاعة',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Colors.black87),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black87),
                 ),
                 const SizedBox(
                   height: 20,
@@ -734,10 +742,10 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                   controller: context.read<UserCubit>().roomCapacityController,
                   decoration: const InputDecoration(
                     labelText: 'سعة القاعة',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Colors.black87),
                   ),
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black87),
                 ),
                 const SizedBox(
                   height: 20,
@@ -749,7 +757,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     const Text(
                       'عناوين الكاميرات',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
+                          fontWeight: FontWeight.bold, color: Colors.black87),
                     ),
                     const SizedBox(height: 20),
                     ...context
@@ -761,9 +769,9 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                                 controller: controller, // هنا
                                 decoration: const InputDecoration(
                                   labelText: 'عنوان الكاميرا',
-                                  labelStyle: TextStyle(color: Colors.white),
+                                  labelStyle: TextStyle(color: Colors.black87),
                                 ),
-                                style: const TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.black87),
                               ),
                             )),
                     TextButton.icon(
@@ -791,7 +799,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 60,
                     child: Text('ID',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
@@ -800,7 +808,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 60,
                     child: Text('اسم القاعة',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
@@ -809,7 +817,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 60,
                     child: Text('السعة',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
@@ -818,7 +826,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 60,
                     child: Text('الكاميرا',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
@@ -826,15 +834,15 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                         height: 70,
                         width: 60,
                         child: Text('تعديل',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18)))),
+                            style: TextStyle(
+                                color: Colors.black87, fontSize: 18)))),
                 DataColumn(
                     label: SizedBox(
                         height: 70,
                         width: 60,
                         child: Text('حذف',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18)))),
+                            style: TextStyle(
+                                color: Colors.black87, fontSize: 18)))),
               ],
               rows: rooms
                   .map(
@@ -846,7 +854,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                           child: Text(r['id'] ?? '',
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 18)),
+                                  color: Colors.black87, fontSize: 18)),
                         ),
                       ),
                       DataCell(
@@ -856,7 +864,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                           child: Text(r['name'] ?? '',
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 18)),
+                                  color: Colors.black87, fontSize: 18)),
                         ),
                       ),
                       DataCell(
@@ -866,7 +874,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                           child: Text(r['capacity'] ?? '',
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 18)),
+                                  color: Colors.black87, fontSize: 18)),
                         ),
                       ),
                       DataCell(
@@ -879,7 +887,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                               r['camera'] ?? '',
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 18),
+                                  color: Colors.black87, fontSize: 18),
                             ),
                           ),
                         ),
@@ -945,9 +953,9 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                   controller: context.read<UserCubit>().examDateController,
                   decoration: const InputDecoration(
                     labelText: 'اليوم و التاريخ',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Colors.black87),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black87),
                   readOnly: true,
                   onTap: () async {
                     DateTime? newDate = await showDatePicker(
@@ -985,7 +993,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 150,
                     child: Text('اليوم',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
@@ -993,38 +1001,38 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 150,
                     child: Text('التاريخ',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
                     label: SizedBox(
                         width: 150,
                         child: Text('تعديل',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18)))),
+                            style: TextStyle(
+                                color: Colors.black87, fontSize: 18)))),
                 DataColumn(
                     label: SizedBox(
                         width: 150,
                         child: Text('حذف',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18)))),
+                            style: TextStyle(
+                                color: Colors.black87, fontSize: 18)))),
               ],
               rows: examDays.map((e) {
                 return DataRow(cells: [
                   DataCell(SizedBox(
                     width: 100,
                     child: Text(e['id'] ?? '',
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   )),
                   DataCell(SizedBox(
                     width: 150,
                     child: Text(e['day'] ?? '',
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   )),
                   DataCell(SizedBox(
                     width: 150,
                     child: Text(e['date'] ?? '',
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   )),
                   DataCell(
                     IconButton(
@@ -1106,9 +1114,9 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                       context.read<UserCubit>().examPeriodFromController,
                   decoration: const InputDecoration(
                     labelText: 'من',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Colors.black87),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black87),
                 ),
               ],
               onAdd: context.read<UserCubit>().sendExamTime,
@@ -1118,7 +1126,7 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 100,
                     child: Text('ID',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
@@ -1126,33 +1134,33 @@ class _AdminDataEntryScreenState extends State<AdminDataEntryScreen> {
                     width: 150,
                     child: Text('الوقت',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   ),
                 ),
                 DataColumn(
                     label: SizedBox(
                         width: 150,
                         child: Text('تعديل',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18)))),
+                            style: TextStyle(
+                                color: Colors.black87, fontSize: 18)))),
                 DataColumn(
                     label: SizedBox(
                         width: 150,
                         child: Text('حذف',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18)))),
+                            style: TextStyle(
+                                color: Colors.black87, fontSize: 18)))),
               ],
               rows: examTimes.map((e) {
                 return DataRow(cells: [
                   DataCell(SizedBox(
                     width: 100,
                     child: Text(e['id'] ?? '',
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   )),
                   DataCell(SizedBox(
                     width: 150,
                     child: Text(e['time'] ?? '',
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: TextStyle(color: Colors.black87, fontSize: 18)),
                   )),
                   DataCell(
                     IconButton(

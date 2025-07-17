@@ -191,17 +191,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final user = currentUser;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF323241),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.blue),
         title: const Text(
           "الملف الشخصي",
           style: TextStyle(
-              fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+            color: Colors.black87, // تغيير لون النص إلى الأسود
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Cairo',
+          ),
         ),
-        backgroundColor: const Color(0xFF323241),
-        elevation: 0,
+        backgroundColor: Colors.white, // خلفية بيضاء
+        elevation: 1, // ظل خفيف للتمييز
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -211,48 +215,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const CircleAvatar(
               radius: 50,
               backgroundColor: Colors.blue,
-              child: Icon(Icons.person, size: 60, color: Colors.white),
+              child: Icon(Icons.person, size: 60, color: Colors.black87),
             ),
             const SizedBox(height: 30),
             Card(
-              color: const Color(0xFF3E3E55),
+              color: Colors.white70,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
               child: ListTile(
                 leading: const Icon(Icons.person, color: Colors.blue),
                 title: const Text("الاسم",
-                    style: TextStyle(color: Colors.white70)),
+                    style: TextStyle(color: Colors.black87)),
                 subtitle: Text(user.name,
-                    style: const TextStyle(color: Colors.white)),
+                    style: const TextStyle(color: Colors.black87)),
               ),
             ),
             const SizedBox(height: 15),
             Card(
-              color: const Color(0xFF3E3E55),
+              color: Colors.white70,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
               child: ListTile(
                 leading: const Icon(Icons.email, color: Colors.blue),
                 title: const Text("البريد الإلكتروني",
-                    style: TextStyle(color: Colors.white70)),
+                    style: TextStyle(color: Colors.black87)),
                 subtitle: Text(user.email,
-                    style: const TextStyle(color: Colors.white)),
+                    style: const TextStyle(color: Colors.black87)),
               ),
             ),
             const SizedBox(height: 15),
             Card(
-              color: const Color(0xFF3E3E55),
+              color: Colors.white70,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const ListTile(
                 leading: Icon(Icons.lock, color: Colors.blue),
                 title: Text("كلمة المرور",
-                    style: TextStyle(color: Colors.white70)),
+                    style: TextStyle(color: Colors.black87)),
                 subtitle:
-                    Text("********", style: TextStyle(color: Colors.white)),
+                    Text("********", style: TextStyle(color: Colors.black87)),
               ),
             ),
             const SizedBox(height: 30),
@@ -262,7 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               label: const Text("تعديل المعلومات"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
+                foregroundColor: Colors.black87,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                 shape: RoundedRectangleBorder(

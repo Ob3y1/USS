@@ -343,7 +343,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: const TextStyle(color: Colors.white, fontSize: 20)),
+        Text(title,
+            style: const TextStyle(
+              color: Colors.black87, // تغيير لون النص إلى الأسود
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Cairo',
+            )),
         IconButton(
           icon: const Icon(Icons.add, color: Colors.blue),
           onPressed: onAdd,
@@ -355,12 +361,18 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+        backgroundColor: Colors.white,
         title: const Text('لوحة تحكم مدير النظام',
-            style: TextStyle(color: Colors.white, fontSize: 24)),
+            style: TextStyle(
+              color: Colors.black87, // تغيير لون النص إلى الأسود
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Cairo',
+            )),
+        elevation: 1, // ظل خفيف للتمييز
         iconTheme: const IconThemeData(color: Colors.blue),
       ),
       drawer: const AppDrawer(),
@@ -378,18 +390,20 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        sectionTitle('التخصصات:', () => showSpecialtyDialog()),
+                        sectionTitle(
+                          'التخصصات:',
+                          () => showSpecialtyDialog(),
+                        ),
                         const SizedBox(height: 8),
                         ...specialties.map((spec) => Card(
-                              color: Colors.grey[850],
                               child: ListTile(
                                 title: Text(
                                   spec["name"],
-                                  style: const TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: Colors.black87),
                                 ),
                                 subtitle: Text('ID: ${spec["id"]}',
                                     style:
-                                        const TextStyle(color: Colors.white60)),
+                                        const TextStyle(color: Colors.black87)),
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -415,15 +429,14 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                             'أيام الدوام:', () => showWorkingDayDialog()),
                         const SizedBox(height: 8),
                         ...workingdays.map((day) => Card(
-                              color: Colors.grey[850],
                               child: ListTile(
                                 title: Text(
                                   day["day"],
-                                  style: const TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: Colors.black87),
                                 ),
                                 subtitle: Text('ID: ${day["id"]}',
                                     style:
-                                        const TextStyle(color: Colors.white60)),
+                                        const TextStyle(color: Colors.black87)),
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [

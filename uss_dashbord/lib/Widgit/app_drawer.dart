@@ -8,7 +8,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.grey,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -16,7 +16,12 @@ class AppDrawer extends StatelessWidget {
             decoration: BoxDecoration(color: Colors.blue),
             child: Text(
               'نظام مراقبة الامتحانات',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+              style: TextStyle(
+                color: Colors.black87, // تغيير لون النص إلى الأسود
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Cairo',
+              ),
             ),
           ),
 
@@ -26,7 +31,7 @@ class AppDrawer extends StatelessWidget {
               color: Colors.blue,
             ),
             title: const Text('لوحة التحكم',
-                style: TextStyle(color: Colors.white, fontSize: 18)),
+                style: TextStyle(color: Colors.black87, fontSize: 18)),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/admin_dashboard');
             },
@@ -38,7 +43,7 @@ class AppDrawer extends StatelessWidget {
               color: Colors.blue,
             ),
             title: const Text('إدارة المستخدمين',
-                style: TextStyle(color: Colors.white, fontSize: 18)),
+                style: TextStyle(color: Colors.black87, fontSize: 18)),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/user_management');
             },
@@ -50,7 +55,7 @@ class AppDrawer extends StatelessWidget {
               color: Colors.blue,
             ),
             title: const Text('إدخال البيانات',
-                style: TextStyle(color: Colors.white, fontSize: 18)),
+                style: TextStyle(color: Colors.black87, fontSize: 18)),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/data_input');
             },
@@ -62,7 +67,7 @@ class AppDrawer extends StatelessWidget {
               color: Colors.blue,
             ),
             title: const Text('توليد البرنامج الامتحاني',
-                style: TextStyle(color: Colors.white, fontSize: 18)),
+                style: TextStyle(color: Colors.black87, fontSize: 18)),
             onTap: () {
               Navigator.pushReplacementNamed(
                   context, '/exam_schedule_generator');
@@ -75,7 +80,7 @@ class AppDrawer extends StatelessWidget {
               color: Colors.blue,
             ),
             title: const Text('توزيع المراقبين والمواد',
-                style: TextStyle(color: Colors.white, fontSize: 18)),
+                style: TextStyle(color: Colors.black87, fontSize: 18)),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/linear');
             },
@@ -87,7 +92,7 @@ class AppDrawer extends StatelessWidget {
               color: Colors.blue,
             ),
             title: const Text('الإحصائيات',
-                style: TextStyle(color: Colors.white, fontSize: 18)),
+                style: TextStyle(color: Colors.black87, fontSize: 18)),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/statistics');
             },
@@ -99,7 +104,7 @@ class AppDrawer extends StatelessWidget {
               color: Colors.blue,
             ),
             title: const Text('البحث',
-                style: TextStyle(color: Colors.white, fontSize: 18)),
+                style: TextStyle(color: Colors.black87, fontSize: 18)),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/search_dashboard');
             },
@@ -111,7 +116,7 @@ class AppDrawer extends StatelessWidget {
               color: Colors.blue,
             ),
             title: const Text('حالات الغش',
-                style: TextStyle(color: Colors.white, fontSize: 18)),
+                style: TextStyle(color: Colors.black87, fontSize: 18)),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/CheatingListScreen');
             },
@@ -158,7 +163,7 @@ class AppDrawer extends StatelessWidget {
             ),
             title: const Text(
               'الملف الشخصي',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+              style: TextStyle(color: Colors.black87, fontSize: 18),
             ),
             onTap: () {
               // استدعاء تابع تسجيل الخروج من UserCubit
@@ -172,7 +177,7 @@ class AppDrawer extends StatelessWidget {
             ),
             title: const Text(
               'تسجيل الخروج',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+              style: TextStyle(color: Colors.black87, fontSize: 18),
             ),
             onTap: () {
               // استدعاء تابع تسجيل الخروج من UserCubit

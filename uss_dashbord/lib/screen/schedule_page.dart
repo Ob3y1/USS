@@ -58,89 +58,89 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   Future<void> fetchStructuredDistribution() async {
-  setState(() {
-    isLoading = true;
-    errorMessage = null;
-  });
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
 
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    var headers = {'Authorization': 'Bearer $token'};
-    var dio = Dio();
-    var response = await dio.request(
-      'http://localhost:8000/api/distribution',
-      options: Options(
-        method: 'GET',
-        headers: headers,
-      ),
-    );
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      var headers = {'Authorization': 'Bearer $token'};
+      var dio = Dio();
+      var response = await dio.request(
+        'http://localhost:8000/api/distribution',
+        options: Options(
+          method: 'GET',
+          headers: headers,
+        ),
+      );
 
-    if (response.statusCode == 200) {
-      print(response.data['structured_distribution'].runtimeType);
-print(response.data['structured_distribution']);
+      if (response.statusCode == 200) {
+        print(response.data['structured_distribution'].runtimeType);
+        print(response.data['structured_distribution']);
 
-     final rawStructured = response.data['structured_distribution'];
+        final rawStructured = response.data['structured_distribution'];
 
-if (rawStructured is! Map<String, dynamic>) {
-  print("⚠️ Error: structured_distribution is not a map");
-  setState(() {
-    errorMessage = 'اضغط على زر "توزيع" لبدء الحساب';
-    isLoading = false;
-  });
-  return;
-}
+        if (rawStructured is! Map<String, dynamic>) {
+          print("⚠️ Error: structured_distribution is not a map");
+          setState(() {
+            errorMessage = 'اضغط على زر "توزيع" لبدء الحساب';
+            isLoading = false;
+          });
+          return;
+        }
 
-final structured = rawStructured as Map<String, dynamic>;
+        final structured = rawStructured as Map<String, dynamic>;
 
-      final result =
-          <String, Map<String, Map<String, Map<String, dynamic>>>>{};
+        final result =
+            <String, Map<String, Map<String, Map<String, dynamic>>>>{};
 
-      structured.forEach((dayKey, timeMap) {
-        result[dayKey] = {};
-        (timeMap as Map<String, dynamic>).forEach((time, hallsMap) {
-          result[dayKey]![time] = {};
-          (hallsMap as Map<String, dynamic>).forEach((hall, details) {
-            final subjectList = details['subjects'] as List<dynamic>? ?? [];
-            final supervisors = List<String>.from(details['supervisors'] ?? []);
+        structured.forEach((dayKey, timeMap) {
+          result[dayKey] = {};
+          (timeMap as Map<String, dynamic>).forEach((time, hallsMap) {
+            result[dayKey]![time] = {};
+            (hallsMap as Map<String, dynamic>).forEach((hall, details) {
+              final subjectList = details['subjects'] as List<dynamic>? ?? [];
+              final supervisors =
+                  List<String>.from(details['supervisors'] ?? []);
 
-            // تحويل المواد إلى خريطة: name => students_number
-            final materials = <String, int>{};
-            for (var subject in subjectList) {
-              if (subject is Map<String, dynamic>) {
-                final name = subject['name'] as String? ?? 'غير معروف';
-                final students = subject['students_number'] as int? ?? 0;
-                materials[name] = students;
+              // تحويل المواد إلى خريطة: name => students_number
+              final materials = <String, int>{};
+              for (var subject in subjectList) {
+                if (subject is Map<String, dynamic>) {
+                  final name = subject['name'] as String? ?? 'غير معروف';
+                  final students = subject['students_number'] as int? ?? 0;
+                  materials[name] = students;
+                }
               }
-            }
 
-            result[dayKey]![time]![hall] = {
-              'supervisor': supervisors.isNotEmpty ? supervisors.first : null,
-              'materials': materials,
-            };
+              result[dayKey]![time]![hall] = {
+                'supervisor': supervisors.isNotEmpty ? supervisors.first : null,
+                'materials': materials,
+              };
+            });
           });
         });
-      });
 
+        setState(() {
+          scheduleData = result;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          errorMessage = response.statusMessage;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print(e);
       setState(() {
-        scheduleData = result;
-        isLoading = false;
-      });
-    } else {
-      setState(() {
-        errorMessage = response.statusMessage;
+        errorMessage = e.toString();
         isLoading = false;
       });
     }
-  } catch (e) {
-    print(e);
-    setState(() {
-      errorMessage = e.toString();
-      isLoading = false;
-    });
   }
-}
-
 
   Future<void> fetchData() async {
     setState(() {
@@ -223,7 +223,6 @@ final structured = rawStructured as Map<String, dynamic>;
         scheduleData = result;
         isLoading = false;
       });
-    
     } catch (e) {
       print(e);
       setState(() {
@@ -232,136 +231,138 @@ final structured = rawStructured as Map<String, dynamic>;
       });
     }
   }
-Map<String, dynamic> buildRequestPayload(Map<String, dynamic> schedule) {
-  final scheduleDistribution = <String, Map<String, Map<String, int>>>{};
-  final supervisionAssignment = <Map<String, dynamic>>[];
-  final supervisionTasks = <String, int>{};
 
-  schedule.forEach((dayWithDate, times) {
-    final dayMatch = RegExp(r'^(\w+)\s+\(([\d-]+)\)$').firstMatch(dayWithDate);
-    if (dayMatch == null) return;
+  Map<String, dynamic> buildRequestPayload(Map<String, dynamic> schedule) {
+    final scheduleDistribution = <String, Map<String, Map<String, int>>>{};
+    final supervisionAssignment = <Map<String, dynamic>>[];
+    final supervisionTasks = <String, int>{};
 
-    final day = dayMatch.group(1)!;
-    final date = dayMatch.group(2)!;
+    schedule.forEach((dayWithDate, times) {
+      final dayMatch =
+          RegExp(r'^(\w+)\s+\(([\d-]+)\)$').firstMatch(dayWithDate);
+      if (dayMatch == null) return;
 
-    (times as Map<String, dynamic>).forEach((time, halls) {
-      final scheduleKey = "$date $day $time";
-      final courseMap = <String, Map<String, int>>{};
+      final day = dayMatch.group(1)!;
+      final date = dayMatch.group(2)!;
 
-      (halls as Map<String, dynamic>).forEach((hall, info) {
-        final supervisor = info['supervisor'] ?? 'غير معروف';
-        final materials = info['materials'] as Map<String, dynamic>;
+      (times as Map<String, dynamic>).forEach((time, halls) {
+        final scheduleKey = "$date $day $time";
+        final courseMap = <String, Map<String, int>>{};
 
-        // لتجميع بيانات المواد ضمن schedule_distribution
-        materials.forEach((course, students) {
-          courseMap.putIfAbsent(course, () => {});
-          courseMap[course]![hall] = students;
+        (halls as Map<String, dynamic>).forEach((hall, info) {
+          final supervisor = info['supervisor'] ?? 'غير معروف';
+          final materials = info['materials'] as Map<String, dynamic>;
+
+          // لتجميع بيانات المواد ضمن schedule_distribution
+          materials.forEach((course, students) {
+            courseMap.putIfAbsent(course, () => {});
+            courseMap[course]![hall] = students;
+          });
+
+          // لتجميع بيانات الإشراف supervision_assignment
+          supervisionAssignment.add({
+            'supervisor': supervisor,
+            'date': date,
+            'day': day,
+            'time': time,
+            'hall': hall,
+            'courses': materials.keys.toList(),
+            'total_students':
+                materials.values.fold(0, (a, b) => (a + b).toInt()),
+          });
+
+          // لتجميع عدد مهام كل مشرف
+          supervisionTasks.update(supervisor, (value) => value + 1,
+              ifAbsent: () => 1);
         });
 
-        // لتجميع بيانات الإشراف supervision_assignment
-        supervisionAssignment.add({
-          'supervisor': supervisor,
-          'date': date,
-          'day': day,
-          'time': time,
-          'hall': hall,
-          'courses': materials.keys.toList(),
-          'total_students': materials.values.fold(0, (a, b) => (a + b).toInt())
-,
-        });
-
-        // لتجميع عدد مهام كل مشرف
-        supervisionTasks.update(supervisor, (value) => value + 1, ifAbsent: () => 1);
+        scheduleDistribution[scheduleKey] = courseMap;
       });
-
-      scheduleDistribution[scheduleKey] = courseMap;
     });
-  });
 
-  return {
-    'status': 'ok',
-    'schedule_distribution': scheduleDistribution,
-    'supervision_assignment': supervisionAssignment,
-    'supervision_tasks': supervisionTasks,
-  };
-}
-
-
-Future<void> senddistribution(Map<String, dynamic> scheduleData) async {
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString('token');
-
-  final headers = {
-    'Authorization': 'Bearer $token',
-    'Content-Type': 'application/json',
-  };
-
-  final dio = Dio();
-  final payload = buildRequestPayload(scheduleData);
-
-  try {
-    final response = await dio.post(
-      'http://localhost:8000/api/distribution',
-      options: Options(headers: headers),
-      data: payload,
-    );
-
-    print('✅ Success: ${response.data}');
-  } on DioException catch (e) {
-    if (e.response != null) {
-      print('❌ Status: ${e.response?.statusCode}');
-      print('❌ Error Response: ${e.response?.data}');
-    } else {
-      print('❌ Dio Error: ${e.message}');
-    }
-    rethrow;
+    return {
+      'status': 'ok',
+      'schedule_distribution': scheduleDistribution,
+      'supervision_assignment': supervisionAssignment,
+      'supervision_tasks': supervisionTasks,
+    };
   }
-}
 
+  Future<void> senddistribution(Map<String, dynamic> scheduleData) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
 
+    final headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
 
+    final dio = Dio();
+    final payload = buildRequestPayload(scheduleData);
 
+    try {
+      final response = await dio.post(
+        'http://localhost:8000/api/distribution',
+        options: Options(headers: headers),
+        data: payload,
+      );
+
+      print('✅ Success: ${response.data}');
+    } on DioException catch (e) {
+      if (e.response != null) {
+        print('❌ Status: ${e.response?.statusCode}');
+        print('❌ Error Response: ${e.response?.data}');
+      } else {
+        print('❌ Dio Error: ${e.message}');
+      }
+      rethrow;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           'توزيع الامتحانات',
           style: TextStyle(
-            fontSize: 20,
-            color: Colors.white,
+            color: Colors.black87, // تغيير لون النص إلى الأسود
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Cairo',
           ),
         ),
-        iconTheme: IconThemeData(color: Colors.blue),
-        backgroundColor: Color.fromARGB(255, 50, 50, 65),
+        backgroundColor: Colors.white, // خلفية بيضاء
+        elevation: 1, // ظل خفيف للتمييز
+        iconTheme: const IconThemeData(color: Colors.blue),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: ElevatedButton(
               onPressed: fetchData,
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              child: const Text('توزيع',style: TextStyle(
-            
-            color: Colors.white,
-          ),),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+              child: const Text(
+                'توزيع',
+                style: TextStyle(color: Colors.blue),
+              ),
             ),
           ),
         ],
       ),
       drawer: const AppDrawer(),
-     body: isLoading
-    ? const Center(child: CircularProgressIndicator())
-    : errorMessage != null
-        ? Center(child: Text('حدث خطأ: $errorMessage', style: const TextStyle(color: Colors.red)))
-        : ( scheduleData.isEmpty)
-            ? const Center(child: Text('اضغط على زر "توزيع" لبدء الحساب'))
-            : buildScheduleTable(scheduleData, theme),
-
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : errorMessage != null
+              ? Center(
+                  child: Text('حدث خطأ: $errorMessage',
+                      style: const TextStyle(color: Colors.red)))
+              : (scheduleData.isEmpty)
+                  ? const Center(child: Text('اضغط على زر "توزيع" لبدء الحساب'))
+                  : buildScheduleTable(scheduleData, theme),
     );
   }
 
@@ -376,11 +377,10 @@ Future<void> senddistribution(Map<String, dynamic> scheduleData) async {
       child: Column(
         children: [
           TabBar(
-            indicatorColor: Colors.white,
-            unselectedLabelColor: Colors.white,
-            labelColor: Colors.white,
+            indicatorColor: Colors.black87,
+            unselectedLabelColor: Colors.black87,
+            labelColor: Colors.black87,
             isScrollable: true,
-            
             tabs: days.map((day) => Tab(text: day)).toList(),
           ),
           Expanded(
@@ -391,92 +391,201 @@ Future<void> senddistribution(Map<String, dynamic> scheduleData) async {
                   for (var t in data[day]!.values) ...t.keys
                 }.toList();
 
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columnSpacing: 30,
-                    columns: [
-                      const DataColumn(label: Text('القاعة',style: TextStyle(
-            
-            color: Colors.white,
-          ),)),
-                      ...times.map((time) => DataColumn(label: Text(time,style: TextStyle(color: Colors.white,),))),
-                    ],
-                    rows: halls.map((hall) {
-                      return DataRow(cells: [
-                        DataCell(Text(hall,style: TextStyle(color: Colors.white,))),
-                        ...times.map((time) {
-                          final entry = data[day]?[time]?[hall];
-                          if (entry == null) {
-                            return const DataCell(Text('-',style: TextStyle(color: Colors.white,)));
-                          }
-
-                          final supervisor = entry['supervisor'];
-                          final materials =
-                              entry['materials'] as Map<String, int>;
-
-                          return DataCell(
-                            SizedBox(
-                              width: 120, // عرض ثابت أو اختياري
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (supervisor != null)
-                                      Text(
-                                        ' $supervisor',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12,color: Colors.white,),
-                                      ),
-                                    ...materials.entries.map((e) => Text(
-                                          ' ${e.key}:  ${e.value}',
-                                          style: const TextStyle(fontSize: 12,color: Colors.white,),
-                                        )),
-                                  ],
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minWidth: constraints.maxWidth,
+                        ),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: DataTable(
+                            columnSpacing: 20, // تقليل التباعد بين الأعمدة
+                            headingRowHeight: 60, // زيادة ارتفاع رأس الجدول
+                            dataRowMinHeight: 40, // الحد الأدنى لارتفاع الصف
+                            dataRowMaxHeight:
+                                double.infinity, // السماح للصفوف بالتوسع
+                            columns: [
+                              const DataColumn(
+                                label: Text(
+                                  'القاعة',
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14, // زيادة حجم خط الرأس
+                                  ),
+                                ),
+                                tooltip: 'أسماء القاعات',
+                              ),
+                              ...times.map(
+                                (time) => DataColumn(
+                                  label: Text(
+                                    time,
+                                    style: const TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14, // زيادة حجم خط الرأس
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        }).toList(),
-                      ]);
-                    }).toList(),
-                  ),
+                            ],
+                            rows: halls.map((hall) {
+                              return DataRow(
+                                cells: [
+                                  DataCell(
+                                    Container(
+                                      constraints:
+                                          const BoxConstraints(minWidth: 80),
+                                      child: Text(
+                                        hall,
+                                        style: const TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 14, // زيادة حجم خط الخلايا
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  ...times.map((time) {
+                                    final entry = data[day]?[time]?[hall];
+                                    if (entry == null) {
+                                      return const DataCell(
+                                        Text(
+                                          '-',
+                                          style:
+                                              TextStyle(color: Colors.black87),
+                                        ),
+                                      );
+                                    }
+
+                                    final supervisor =
+                                        entry['supervisor'] ?? '';
+                                    final materialsRaw = entry['materials']
+                                            as Map<String, dynamic>? ??
+                                        {};
+
+                                    final materials = materialsRaw.map((k, v) {
+                                      int val = 0;
+                                      if (v is int) {
+                                        val = v;
+                                      } else if (v is String) {
+                                        val = int.tryParse(v) ?? 0;
+                                      }
+                                      return MapEntry(k, val);
+                                    });
+
+                                    return DataCell(
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8, horizontal: 8),
+                                        constraints: const BoxConstraints(
+                                          minWidth:
+                                              120, // زيادة الحد الأدنى لعرض الخلية
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if (supervisor.isNotEmpty)
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 4),
+                                                child: Text(
+                                                  supervisor,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize:
+                                                        14, // زيادة حجم الخط
+                                                    color: Colors.black87,
+                                                  ),
+                                                ),
+                                              ),
+                                            ...materials.entries.map(
+                                              (e) => Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 4),
+                                                child: Text(
+                                                  '${e.key}: ${e.value}',
+                                                  style: const TextStyle(
+                                                    fontSize:
+                                                        14, // زيادة حجم الخط
+                                                    color: Colors.black87,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ],
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 );
               }).toList(),
             ),
           ),
-          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(width: 12),
-               ElevatedButton(
-       onPressed: () async {
-              try {
-               await senddistribution(scheduleData);
-              ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(content: Text('تم حفظ الجدول بنجاح')),
-              );
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white, // خلفية بيضاء
+                  elevation: 3, // يمكنك تعديل الارتفاع حسب الرغبة
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // لتنعيم الحواف
+                  ),
+                ),
+                onPressed: () async {
+                  try {
+                    await senddistribution(scheduleData);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('تم حفظ الجدول بنجاح')),
+                    );
                   } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('حدث خطأ أثناء حفظ الجدول: $e')),
-                     );
-             print(e);
-                               }
-                                         },
-                             child: const Text('حفظ التغييرات'),
-                    ),
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('حدث خطأ أثناء حفظ الجدول: $e')),
+                    );
+                    print(e);
+                  }
+                },
+                child: const Text(
+                  'حفظ التغييرات',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
               const SizedBox(width: 12),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white, // خلفية بيضاء
+                  elevation: 3, // يمكنك تعديل الارتفاع حسب الرغبة
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // لتنعيم الحواف
+                  ),
+                ),
                 onPressed: () {
                   context.read<UserCubit>().resetDistribution(context);
                 },
-                child: const Text('تصفير الجدول'),
+                child: const Text(
+                  'تصفير الجدول',
+                  style: TextStyle(color: Colors.blue),
+                ),
               ),
             ],
           ),
+          const SizedBox(height: 16),
         ],
       ),
     );

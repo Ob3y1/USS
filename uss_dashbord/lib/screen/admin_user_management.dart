@@ -107,15 +107,19 @@ class _SupervisorsScreenState extends State<UserManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.blue),
+        elevation: 1, // ظل خفيف للتمييز
+        iconTheme: const IconThemeData(color: Colors.black87),
         title: const Text(
           'ادارة المستخدمين',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Cairo',
+          ),
         ),
-        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -139,7 +143,7 @@ class _SupervisorsScreenState extends State<UserManagementScreen> {
                         .toList();
 
                     return Card(
-                      color: const Color.fromARGB(255, 50, 50, 65),
+                      color: Colors.white,
                       elevation: 8, // زيادة الظل لتوضيح أكثر
                       shadowColor:
                           Colors.white.withOpacity(0.5), // لون الظل أبيض شفاف
@@ -147,7 +151,7 @@ class _SupervisorsScreenState extends State<UserManagementScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                         side: const BorderSide(
-                          color: Colors.white, // لون الإطار أبيض
+                          color: Colors.grey, // لون الإطار أبيض
                           width: 1.5, // سمك الإطار
                         ),
                       ),
@@ -159,33 +163,30 @@ class _SupervisorsScreenState extends State<UserManagementScreen> {
                             Text(
                               supervisor['name'] ?? '',
                               style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               'البريد: ${supervisor['email']}',
                               style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               'الحالة: ${supervisor['status']}',
                               style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               'أيام الدوام: ${workingDays.isNotEmpty ? workingDays.join(', ') : "لا يوجد"}',
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black87),
                             ),
                             const SizedBox(height: 12),
                             Row(
@@ -202,7 +203,7 @@ class _SupervisorsScreenState extends State<UserManagementScreen> {
                                     style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                        color: Colors.black87),
                                   ),
                                 ),
                                 const SizedBox(width: 16),
@@ -216,7 +217,7 @@ class _SupervisorsScreenState extends State<UserManagementScreen> {
                                           style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.white),
+                                              color: Colors.black87),
                                         ),
                                         content: Text(
                                             'هل تريد حذف المشرف ${supervisor['name']}؟'),
@@ -255,7 +256,7 @@ class _SupervisorsScreenState extends State<UserManagementScreen> {
                                     style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                        color: Colors.black87),
                                   ),
                                 ),
                               ],
@@ -432,7 +433,7 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           widget.supervisor == null ? 'إضافة مشرف' : 'تعديل مشرف',
@@ -441,7 +442,9 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
               const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+        backgroundColor: Colors.white, // خلفية بيضاء
+        elevation: 1, // ظل خفيف للتمييز
+
         iconTheme: const IconThemeData(color: Colors.blue),
       ),
       body: Padding(
@@ -458,7 +461,7 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
                 controller: nameController,
                 decoration: const InputDecoration(
                   labelText: 'الاسم',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: TextStyle(color: Colors.black87),
                 ),
                 validator: (value) => value == null || value.isEmpty
                     ? 'الرجاء إدخال الاسم'
@@ -472,7 +475,7 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
                 controller: emailController,
                 decoration: const InputDecoration(
                   labelText: 'البريد الإلكتروني',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: TextStyle(color: Colors.black87),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty)
@@ -484,14 +487,14 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
               TextFormField(
                 controller: passwordController,
                 obscureText: true,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 decoration: InputDecoration(
                   labelText: widget.supervisor == null
                       ? 'كلمة المرور'
                       : 'كلمة المرور (اختياري)',
-                  labelStyle: const TextStyle(color: Colors.white),
+                  labelStyle: const TextStyle(color: Colors.black87),
                   counterStyle: const TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.white),
+                      fontWeight: FontWeight.bold, color: Colors.black87),
                 ),
                 validator: (value) {
                   if (widget.supervisor == null) {
@@ -509,7 +512,7 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
                 value: status,
                 decoration: const InputDecoration(
                   labelText: 'الحالة',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: TextStyle(color: Colors.black87),
                 ),
                 items: const [
                   DropdownMenuItem(value: 'active', child: Text('نشط')),
@@ -532,7 +535,7 @@ class _SupervisorFormScreenState extends State<SupervisorFormScreen> {
                 return CheckboxListTile(
                   title: Text(
                     day['day'],
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black87),
                   ),
                   value: selectedDayIds.contains(day['id']),
                   onChanged: (bool? checked) {

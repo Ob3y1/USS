@@ -56,11 +56,11 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
   Widget buildCard(String title, Widget child) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF2A2E43),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.grey.withOpacity(0.2),
             blurRadius: 8,
             offset: const Offset(3, 3),
           ),
@@ -76,7 +76,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.lightBlueAccent,
+                color: const Color(0xFF1976D2),
               ),
             ),
             const SizedBox(height: 8),
@@ -244,7 +244,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
           const SizedBox(height: 8),
           ...types.map((type) => Text(
                 "${type['cheating_type']}: ${type['total']} حالة",
-                style: _cardTextStyle(color: Colors.orangeAccent),
+                style: _cardTextStyle(color: Colors.orange.shade700),
               )),
         ],
       ),
@@ -323,7 +323,7 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
     );
   }
 
-  TextStyle _cardTextStyle({Color color = Colors.white70}) {
+  TextStyle _cardTextStyle({Color color = Colors.black87}) {
     return TextStyle(
       fontSize: 14,
       color: color,
@@ -354,16 +354,21 @@ class _AdminStatisticsScreenState extends State<AdminStatisticsScreen> {
             buildspecialtiesCard(),
           ];
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      backgroundColor: Colors.white,
       drawer: const AppDrawer(),
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+        backgroundColor: Colors.white,
         title: const Text(
           'الإحصائيات',
           textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Cairo',
+          ),
         ),
+        elevation: 1, // ظل خفيف للتمييز
         iconTheme: const IconThemeData(color: Colors.blue),
       ),
       body: isLoading

@@ -324,24 +324,33 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
       });
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
           'الجدول الامتحاني',
-          style: TextStyle(fontSize: 20, color: Colors.white),
+          style: TextStyle(
+            color: Colors.black87, // تغيير لون النص إلى الأسود
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Cairo',
+          ),
         ),
-        iconTheme: const IconThemeData(color: Colors.blue),
-        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+        backgroundColor: Colors.white, // خلفية بيضاء
+        elevation: 1, // ظل خفيف للتمييز
+       iconTheme: const IconThemeData(color: Colors.blue), // أيقونات سوداء
       ),
       drawer: const AppDrawer(),
       body: Column(
         children: [
+          SizedBox(
+            height: 10,
+          ),
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Table(
-                border: TableBorder.all(color: Colors.grey.shade300),
+                border: TableBorder.all(color: Colors.grey.shade700),
                 columnWidths: {
                   0: const FixedColumnWidth(100),
                   1: const FixedColumnWidth(100),
@@ -351,27 +360,31 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                 children: [
                   // رأس الجدول
                   TableRow(
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 61, 61, 68),
-                    ),
+                    decoration: const BoxDecoration(),
                     children: [
                       const Padding(
                         padding: EdgeInsets.all(8),
                         child: Text('اليوم',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: Colors.white)),
+                              color:
+                                  Colors.black87, // تغيير لون النص إلى الأسود
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Cairo',
+                            )),
                       ),
                       const Padding(
                         padding: EdgeInsets.all(8),
                         child: Text('التاريخ',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: Colors.white)),
+                              color:
+                                  Colors.black87, // تغيير لون النص إلى الأسود
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Cairo',
+                            )),
                       ),
                       ...slotLabels.map(
                         (slot) => Padding(
@@ -379,9 +392,12 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                           child: Text(slot,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                  color: Colors.white)),
+                                color:
+                                    Colors.black87, // تغيير لون النص إلى الأسود
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Cairo',
+                              )),
                         ),
                       ),
                     ],
@@ -395,16 +411,17 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                     final slots = value['slots'] as Map<String, List<String>>;
 
                     return TableRow(
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 61, 61, 68),
-                      ),
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 12, horizontal: 8),
                           child: Text(day,
                               style: const TextStyle(
-                                  fontSize: 13, color: Colors.white),
+                                fontSize: 13,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Cairo',
+                              ),
                               textAlign: TextAlign.center),
                         ),
                         Padding(
@@ -412,7 +429,11 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                               vertical: 12, horizontal: 8),
                           child: Text(date,
                               style: const TextStyle(
-                                  fontSize: 13, color: Colors.white),
+                                fontSize: 13,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Cairo',
+                              ),
                               textAlign: TextAlign.center),
                         ),
                         ...slotLabels.map((slot) {
@@ -475,16 +496,23 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                                                       child: Text(subject,
                                                           style:
                                                               const TextStyle(
-                                                                  color: Colors
-                                                                      .white)),
+                                                            color:
+                                                                Colors.black87,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontFamily: 'Cairo',
+                                                          )),
                                                     ),
                                                   ),
                                                   childWhenDragging: Opacity(
                                                     opacity: 0.3,
                                                     child: Text(subject,
                                                         style: const TextStyle(
-                                                            color:
-                                                                Colors.white)),
+                                                          color: Colors.black87,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontFamily: 'Cairo',
+                                                        )),
                                                   ),
                                                   onDragStarted: () {
                                                     draggedSubject = subject;
@@ -503,17 +531,27 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                                                   },
                                                   child: Text(subject,
                                                       style: const TextStyle(
-                                                          color: Colors.white)),
+                                                        color: Colors.black87,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontFamily: 'Cairo',
+                                                      )),
                                                 )
                                               : Text(subject,
                                                   style: const TextStyle(
-                                                      color: Colors.white));
+                                                    color: Colors.black87,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Cairo',
+                                                  ));
                                         }).toList()
                                       : [
                                           const Text('-',
                                               style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: Colors.white))
+                                                fontSize: 13,
+                                                color: Colors.black87,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Cairo',
+                                              ))
                                         ],
                                 ),
                               );
@@ -542,7 +580,13 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                     const SnackBar(content: Text('تم توليد الجدول')),
                   );
                 },
-                child: const Text('توليد الجدول'),
+                child: const Text('توليد الجدول',
+                    style: TextStyle(
+                      color: Colors.blue, // تغيير لون النص إلى الأسود
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Cairo',
+                    )),
               ),
               const SizedBox(width: 12),
               ElevatedButton(
@@ -578,7 +622,15 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                         'جدول الامتحانات يحتوي على بيانات. يرجى التصفير أولاً قبل إدخال بيانات جديدة.');
                   }
                 },
-                child: const Text('حفظ الجدول'),
+                child: const Text(
+                  'حفظ الجدول',
+                  style: TextStyle(
+                    color: Colors.blue, // تغيير لون النص إلى الأسود
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Cairo',
+                  ),
+                ),
               ),
               const SizedBox(width: 12),
               ElevatedButton(
@@ -591,7 +643,13 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                     isDragEnabled = false;
                   });
                 },
-                child: const Text('تصفير الجدول'),
+                child: const Text('تصفير الجدول',
+                    style: TextStyle(
+                      color: Colors.blue, // تغيير لون النص إلى الأسود
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Cairo',
+                    )),
               ),
               const SizedBox(width: 12),
               ElevatedButton(
@@ -647,7 +705,13 @@ class _FullSchedulePageState extends State<FullSchedulePage> {
                   final pdfDoc = await buildPdf(organizedData, slotLabels);
                   await Printing.layoutPdf(onLayout: (format) => pdfDoc.save());
                 },
-                child: const Text('طباعة الجدول'),
+                child: const Text('طباعة الجدول',
+                    style: TextStyle(
+                      color: Colors.blue, // تغيير لون النص إلى الأسود
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Cairo',
+                    )),
               ),
             ],
           ),

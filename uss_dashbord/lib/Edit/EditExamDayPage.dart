@@ -96,7 +96,7 @@ class _EditExamDayPageState extends State<EditExamDayPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'تعديل يوم الامتحان',
@@ -104,7 +104,9 @@ class _EditExamDayPageState extends State<EditExamDayPage> {
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 50, 50, 65),
+         backgroundColor: Colors.white, // خلفية بيضاء
+        elevation: 1, // ظل خفيف للتمييز
+       
         iconTheme: const IconThemeData(color: Colors.blue),
       ),
       body: Padding(
@@ -112,7 +114,7 @@ class _EditExamDayPageState extends State<EditExamDayPage> {
         child: Column(
           children: [
             TextField(
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.black87),
               controller: dayController,
               decoration: const InputDecoration(
                 labelText: 'اليوم',
@@ -124,7 +126,7 @@ class _EditExamDayPageState extends State<EditExamDayPage> {
             ),
             const SizedBox(height: 16),
             TextField(
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.black87),
               controller: dateController,
               decoration: const InputDecoration(
                 labelText: 'التاريخ',
